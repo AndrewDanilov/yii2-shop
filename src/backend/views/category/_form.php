@@ -17,7 +17,7 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'image')->widget(InputImages::class) ?>
 
-	<?= $form->field($model, 'parent_id')->listBox(NestedCategoryHelper::getDropdownTree(Category::find()), ['prompt' => '']) ?>
+	<?= $form->field($model, 'parent_id')->dropDownList(NestedCategoryHelper::getDropdownTree(Category::find()), ['prompt' => '']) ?>
 
 	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
