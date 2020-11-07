@@ -35,6 +35,7 @@ class Category extends \yii\db\ActiveRecord
         return [
 	        [['name'], 'required'],
             [['order', 'parent_id'], 'integer'],
+            [['parent_id'], 'validateParent'],
             [['image'], 'string', 'max' => 255],
 	        [['name', 'seo_title'], 'string', 'max' => 255],
 	        [['description', 'seo_description'], 'string'],
@@ -57,6 +58,13 @@ class Category extends \yii\db\ActiveRecord
 	        'seo_title' => 'Seo Title',
 	        'seo_description' => 'Seo Description',
         ];
+    }
+    
+    public function validateParent($attribute, $params, $validator)
+    {
+    	if ($this->$attribute == $this->id) {
+    		$this->addError($attribute, 'Категория не может быть вложена сама в себя');
+	    }
     }
 
 	public function getProducts()
