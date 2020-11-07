@@ -1,0 +1,29 @@
+{
+    "name": "andrewdanilov/yii2-shop",
+    "description": "Yii2 Shop",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","shop","product","catalog"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AndrewDanilov",
+            "email": "andrewdanilov@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "yiisoft/yii2": "~2.0.0",
+        "2amigos/yii2-date-picker-widget": "~1.0",
+        "kartik-v/yii2-widget-select2": "@dev",
+        "andrewdanilov/yii2-helpers": "~1.0.0",
+        "andrewdanilov/yii2-behaviors": "~1.0.0",
+        "andrewdanilov/yii2-ckeditor": "~1.0.0",
+        "andrewdanilov/yii2-input-images": "~1.0.0",
+        "andrewdanilov/yii2-grid-tools": "~1.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "andrewdanilov\\shop\\": "src/"
+        }
+    }
+}
