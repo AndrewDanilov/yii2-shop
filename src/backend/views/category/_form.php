@@ -1,8 +1,10 @@
 <?php
 
-use andrewdanilov\InputImages\InputImages;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use andrewdanilov\helpers\NestedCategoryHelper;
+use andrewdanilov\InputImages\InputImages;
+use andrewdanilov\shop\common\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $model andrewdanilov\shop\common\models\Category */
@@ -14,6 +16,8 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
 	<?= $form->field($model, 'image')->widget(InputImages::class) ?>
+
+	<?= $form->field($model, 'parent_id')->listBox(NestedCategoryHelper::getDropdownTree(Category::find()), ['prompt' => '']) ?>
 
 	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
