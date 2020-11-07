@@ -15,11 +15,11 @@ use andrewdanilov\shop\common\models\Category;
 
     <?php $form = ActiveForm::begin(); ?>
 
-	<?= $form->field($model, 'image')->widget(InputImages::class) ?>
+	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
 	<?= $form->field($model, 'parent_id')->dropDownList(NestedCategoryHelper::getDropdownTree(Category::find()), ['prompt' => '']) ?>
 
-	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+	<?= $form->field($model, 'image')->widget(InputImages::class) ?>
 
 	<?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 

@@ -28,11 +28,11 @@ use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionHtml;
 
     <?php $form = ActiveForm::begin(); ?>
 
+	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
 	<?= $form->field($model, 'article')->textInput(['maxlength' => true]) ?>
 
 	<?= $form->field($model, 'images')->widget(InputImages::class) ?>
-
-	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
 	<?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
