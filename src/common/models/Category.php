@@ -1,8 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
-use andrewdanilov\helpers\NestedCategoryHelper;
 use yii\helpers\Inflector;
+use andrewdanilov\helpers\NestedCategoryHelper;
 
 /**
  * This is the model class for table "shop_category".
@@ -69,6 +69,11 @@ class Category extends \yii\db\ActiveRecord
     	if ($this->$attribute == $this->id) {
     		$this->addError($attribute, 'Категория не может быть вложена сама в себя');
 	    }
+    }
+
+    public function getChildren()
+    {
+    	return $this->hasMany(Category::class, ['parent_id' => 'id']);
     }
 
 	/**
