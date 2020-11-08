@@ -8,6 +8,7 @@ namespace andrewdanilov\shop\common\models;
  * @property string $type
  * @property int $order
  * @property string $name
+ * @property boolean $is_filtered
  * @property Product[] $products
  */
 class Property extends \yii\db\ActiveRecord
@@ -45,7 +46,8 @@ class Property extends \yii\db\ActiveRecord
             [['type', 'name'], 'required'],
             [['order'], 'integer'],
 	        [['name'], 'string', 'max' => 255],
-	        [['order'], 'default', 'value' => 0],
+            [['is_filtered'], 'boolean'],
+	        [['order', 'is_filtered'], 'default', 'value' => 0],
 	        [['type'], 'string', 'max' => 10],
         ];
     }
@@ -61,6 +63,7 @@ class Property extends \yii\db\ActiveRecord
             'order' => 'Порядок',
             'name' => 'Название',
             'tagIds' => 'Категории',
+            'is_filtered' => 'Использовать в фильтре',
         ];
     }
 

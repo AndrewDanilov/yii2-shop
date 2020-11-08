@@ -22,6 +22,8 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'tagIds')->checkboxList(Category::getCategoriesList()) ?>
 
+    <?= $form->field($model, 'is_filtered')->checkbox(['Нет', 'Да']) ?>
+
     <?= $form->field($model, 'order')->textInput() ?>
 
     <div class="form-group">

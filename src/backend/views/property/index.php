@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use andrewdanilov\behaviors\TagBehavior;
 use andrewdanilov\behaviors\ValueTypeBehavior;
 use andrewdanilov\shop\common\models\Property;
 use andrewdanilov\shop\backend\models\PropertySearch;
@@ -40,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	            },
 	            'filter' => ValueTypeBehavior::getTypeList(),
             ],
+            'is_filtered:boolean',
             'order',
 
 	        [

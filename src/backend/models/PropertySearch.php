@@ -7,8 +7,6 @@ use andrewdanilov\shop\common\models\Property;
 
 class PropertySearch extends Property
 {
-	public $name;
-
     /**
      * @inheritdoc
      */
@@ -16,7 +14,8 @@ class PropertySearch extends Property
     {
         return [
             [['id', 'order'], 'integer'],
-            [['type', 'name'], 'safe'],
+            [['is_filtered'], 'boolean'],
+            [['type', 'name'], 'string'],
         ];
     }
 
@@ -38,9 +37,7 @@ class PropertySearch extends Property
      */
     public function search($params)
     {
-        $query = Property::find()->joinWith(['tagRef'])->groupBy('id');
-
-        // add conditions that should always apply here
+        $query = Property::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -50,12 +47,10 @@ class PropertySearch extends Property
 		        ],
 		        'attributes' => [
 			        'id',
-			        'name' => [
-				        'asc' => ['name' => SORT_ASC],
-				        'desc' => ['name' => SORT_DESC],
-			        ],
+			        'name',
 			        'type',
 			        'order',
+			        'is_filtered',
 		        ],
 	        ],
         ]);
@@ -70,12 +65,13 @@ class PropertySearch extends Property
 
         // grid filtering conditions
         $query->andFilterWhere([
-            Property::tableName() . '.id' => $this->id,
-	        Property::tableName() . '.order' => $this->order,
-	        Property::tableName() . '.type' => $this->type,
+            'id' => $this->id,
+	        'order' => $this->order,
+	        'type' => $this->type,
+	        'is_filtered' => $this->is_filtered,
         ]);
 
-        $query->andFilterWhere(['like', Property::tableName() . '.name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }
