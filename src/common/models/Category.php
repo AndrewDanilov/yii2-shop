@@ -73,6 +73,8 @@ class Category extends \yii\db\ActiveRecord
 	    }
     }
 
+	//////////////////////////////////////////////////////////////////
+
     public function getChildren()
     {
     	return $this->hasMany(Category::class, ['parent_id' => 'id']);
@@ -89,15 +91,23 @@ class Category extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getAllChildrenProductCategories()
+	{
+		$children_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $this->id);
+		array_push($children_ids, $this->id);
+		return ProductCategories::find()->where(['category_id' => $children_ids]);
+	}
+
+	/**
 	 * Products from a category and from its child categories
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getChildrenProducts()
+	public function getAllChildrenProducts()
 	{
-		$children_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $this->id);
-		array_push($children_ids, $this->id);
-		return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable(ProductCategories::tableName(), ['category_id' => $children_ids]);
+		return $this->hasMany(Product::class, ['id' => 'product_id'])->via('allChildrenProductCategories');
 	}
 
 	public function getBrands()
