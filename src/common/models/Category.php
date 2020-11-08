@@ -18,7 +18,8 @@ use andrewdanilov\helpers\NestedCategoryHelper;
  * @property string $slug
  * @property Category[] $children
  * @property Product[] $products
- * @property Product[] $childrenProducts
+ * @property ProductCategories[] $allChildrenProductCategories
+ * @property Product[] $allChildrenProducts
  * @property Property[] $properties
  * @property Option[] $options
  * @property Brand[] $brands
@@ -91,17 +92,22 @@ class Category extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * ProductCategories link for products from current category and from all children categories
+	 *
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getAllChildrenProductCategories()
 	{
 		$children_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $this->id);
 		array_push($children_ids, $this->id);
-		return ProductCategories::find()->where(['category_id' => $children_ids]);
+		$query = ProductCategories::find();
+		$query->where(['category_id' => $children_ids]);
+		$query->multiple = true;
+		return $query;
 	}
 
 	/**
-	 * Products from a category and from its child categories
+	 * Products link for products from current category and from all children categories
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
