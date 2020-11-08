@@ -1,6 +1,7 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use andrewdanilov\helpers\NestedCategoryHelper;
 use yii\helpers\Inflector;
 
 /**
@@ -70,9 +71,26 @@ class Category extends \yii\db\ActiveRecord
 	    }
     }
 
+	/**
+	 * Products from a category
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getProducts()
 	{
 		return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable(ProductCategories::tableName(), ['category_id' => 'id']);
+	}
+
+	/**
+	 * Products from a category and from its child categories
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getChildrenProducts()
+	{
+		$children_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $this->id);
+		array_push($children_ids, $this->id);
+		return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable(ProductCategories::tableName(), ['category_id' => $children_ids]);
 	}
 
 	public function getBrands()
