@@ -297,8 +297,22 @@ class m181113_151133_shop extends Migration
      */
     public function safeDown()
     {
-        echo "m181113_151133_shop cannot be reverted.\n";
-
-        return false;
+        $this->dropTable('shop_category');
+        $this->dropTable('shop_brand');
+        $this->dropTable('shop_product');
+        $this->dropTable('shop_product_images');
+        $this->dropTable('shop_product_categories');
+        $this->dropTable('shop_option');
+        $this->dropTable('shop_category_options');
+        $this->dropTable('shop_product_options');
+        $this->dropTable('shop_property');
+        $this->dropTable('shop_category_properties');
+        $this->dropTable('shop_product_properties');
+        $this->dropTable('shop_order');
+        $this->dropTable('shop_order_products');
+        $this->dropTable('shop_delivery');
+        $this->dropTable('shop_pay');
+        $this->dropTable('shop_relation');
+        $this->dropTable('shop_product_relations');
     }
 }

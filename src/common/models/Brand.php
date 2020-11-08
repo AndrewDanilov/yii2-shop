@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use yii\helpers\Inflector;
+
 /**
  * This is the model class for table "shop_brand".
  *
@@ -12,6 +14,7 @@ namespace andrewdanilov\shop\common\models;
  * @property string $description
  * @property string $seo_title
  * @property string $seo_description
+ * @property string $slug
  * @property Product[] $products
  * @property Category[] $categories
  */
@@ -32,11 +35,10 @@ class Brand extends \yii\db\ActiveRecord
     {
         return [
 	        [['name'], 'required'],
-	        [['name', 'seo_title'], 'string', 'max' => 255],
+	        [['name', 'seo_title', 'image', 'slug'], 'string', 'max' => 255],
 	        [['description', 'seo_description'], 'string'],
 	        [['order'], 'integer'],
             [['order'], 'default', 'value' => 0],
-            [['image'], 'string', 'max' => 255],
             [['is_favorite'], 'string', 'max' => 1],
         ];
     }
@@ -55,6 +57,7 @@ class Brand extends \yii\db\ActiveRecord
 	        'description' => 'Описание',
 	        'seo_title' => 'Seo Title',
 	        'seo_description' => 'Seo Description',
+	        'slug' => 'Seo Url',
         ];
     }
 
@@ -68,6 +71,17 @@ class Brand extends \yii\db\ActiveRecord
 		return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable(Product::tableName(), ['brand_id' => 'id']);
 	}
 
+	//////////////////////////////////////////////////////////////////
+
+	public function beforeSave($insert)
+	{
+		if (empty($this->slug)) {
+			$this->slug = Inflector::slug($this->name);
+		}
+		return parent::beforeSave($insert);
+	}
+
+	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////
 
 	public static function getBrandsList()

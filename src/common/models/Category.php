@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use yii\helpers\Inflector;
+
 /**
  * This is the model class for table "shop_category".
  *
@@ -12,6 +14,7 @@ namespace andrewdanilov\shop\common\models;
  * @property string $description
  * @property string $seo_title
  * @property string $seo_description
+ * @property string $slug
  * @property Product[] $products
  * @property Property[] $properties
  * @property Option[] $options
@@ -36,8 +39,7 @@ class Category extends \yii\db\ActiveRecord
 	        [['name'], 'required'],
             [['order', 'parent_id'], 'integer'],
             [['parent_id'], 'validateParent'],
-            [['image'], 'string', 'max' => 255],
-	        [['name', 'seo_title'], 'string', 'max' => 255],
+            [['name', 'seo_title', 'image', 'slug'], 'string', 'max' => 255],
 	        [['description', 'seo_description'], 'string'],
             [['order', 'parent_id'], 'default', 'value' => 0],
         ];
@@ -57,6 +59,7 @@ class Category extends \yii\db\ActiveRecord
 	        'description' => 'Описание',
 	        'seo_title' => 'Seo Title',
 	        'seo_description' => 'Seo Description',
+	        'slug' => 'Seo Url',
         ];
     }
     
@@ -85,6 +88,16 @@ class Category extends \yii\db\ActiveRecord
 	public function getProperties()
 	{
 		return $this->hasMany(Property::class, ['id' => 'property_id'])->viaTable(CategoryProperties::tableName(), ['category_id' => 'id']);
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	public function beforeSave($insert)
+	{
+		if (empty($this->slug)) {
+			$this->slug = Inflector::slug($this->name);
+		}
+		return parent::beforeSave($insert);
 	}
 
 	//////////////////////////////////////////////////////////////////

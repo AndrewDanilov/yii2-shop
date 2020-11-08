@@ -106,6 +106,8 @@ use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionHtml;
 
 	<?= $form->field($model, 'seo_description')->textarea(['rows' => 6]) ?>
 
+	<?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+
 	<div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>

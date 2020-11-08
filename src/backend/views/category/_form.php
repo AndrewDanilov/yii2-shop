@@ -27,6 +27,8 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'seo_description')->textarea(['rows' => 6]) ?>
 
+	<?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+
 	<?= $form->field($model, 'order')->textInput() ?>
 
     <div class="form-group">

@@ -23,6 +23,8 @@ use andrewdanilov\InputImages\InputImages;
 
 	<?= $form->field($model, 'seo_description')->textarea(['rows' => 6]) ?>
 
+	<?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+
 	<?= $form->field($model, 'is_favorite')->checkbox() ?>
 
     <?= $form->field($model, 'order')->textInput() ?>

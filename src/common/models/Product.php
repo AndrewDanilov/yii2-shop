@@ -3,6 +3,7 @@ namespace andrewdanilov\shop\common\models;
 
 use andrewdanilov\behaviors\ShopOptionBehavior;
 use yii\db\ActiveQuery;
+use yii\helpers\Inflector;
 
 /**
  * This is the model class for table "shop_product".
@@ -19,6 +20,7 @@ use yii\db\ActiveQuery;
  * @property string $description
  * @property string $seo_title
  * @property string $seo_description
+ * @property string $slug
  * @property Brand $brand
  * @property Order[] $orders
  * @property ActiveQuery $tags
@@ -93,7 +95,7 @@ class Product extends \yii\db\ActiveRecord
 	        [['name'], 'required'],
 	        [['brand_id', 'discount'], 'integer'],
 	        [['is_new', 'is_popular', 'is_action'], 'boolean'],
-            [['article', 'name', 'seo_title'], 'string', 'max' => 255],
+            [['article', 'name', 'seo_title', 'slug'], 'string', 'max' => 255],
             [['price'], 'number'],
             [['price', 'discount', 'is_new', 'is_popular', 'is_action'], 'default', 'value' => 0],
 	        [['description', 'seo_description'], 'string'],
@@ -121,6 +123,7 @@ class Product extends \yii\db\ActiveRecord
 	        'description' => 'Описание',
 	        'seo_title' => 'Seo Title',
 	        'seo_description' => 'Seo Description',
+	        'slug' => 'Seo Url',
         ];
     }
 
@@ -151,6 +154,16 @@ class Product extends \yii\db\ActiveRecord
     public function getAvailableOptions() {
     	return $this->hasMany(Option::class, ['id' => 'option_id'])->via('availableCategoryOptions');
     }
+
+	//////////////////////////////////////////////////////////////////
+
+	public function beforeSave($insert)
+	{
+		if (empty($this->slug)) {
+			$this->slug = Inflector::slug($this->name);
+		}
+		return parent::beforeSave($insert);
+	}
 
     //////////////////////////////////////////////////////////////////
 
