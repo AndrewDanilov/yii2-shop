@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\behaviors\TagBehavior;
 use andrewdanilov\behaviors\ValueTypeBehavior;
 use andrewdanilov\shop\common\models\Property;
@@ -20,9 +21,9 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'type')->dropDownList(ValueTypeBehavior::getTypeList()) ?>
 
-	<?= $form->field($model, 'tagIds')->checkboxList(Category::getCategoriesList()) ?>
-
     <?= $form->field($model, 'is_filtered')->checkbox(['Нет', 'Да']) ?>
+
+	<?= $form->field($model, 'tagIds')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
     <?= $form->field($model, 'order')->textInput() ?>
 

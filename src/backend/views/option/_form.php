@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\common\models\Category;
 
 /* @var $this yii\web\View */
@@ -15,7 +16,7 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-	<?= $form->field($model, 'tagIds')->checkboxList(Category::getCategoriesList()) ?>
+	<?= $form->field($model, 'tagIds')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
 	<?= $form->field($model, 'order')->textInput() ?>
 
