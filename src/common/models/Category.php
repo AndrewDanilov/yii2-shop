@@ -16,7 +16,9 @@ use andrewdanilov\helpers\NestedCategoryHelper;
  * @property string $seo_title
  * @property string $seo_description
  * @property string $slug
+ * @property Category[] $children
  * @property Product[] $products
+ * @property Product[] $childrenProducts
  * @property Property[] $properties
  * @property Option[] $options
  * @property Brand[] $brands
