@@ -11,10 +11,12 @@ use andrewdanilov\shop\common\models\Product;
  *
  * @package andrewdanilov\shop\backend\models
  * @property int $category_id
+ * @property string $marks
  */
 class ProductSearch extends Product
 {
 	public $category_id;
+	public $marks;
 
 	/**
      * @inheritdoc
@@ -25,6 +27,7 @@ class ProductSearch extends Product
             [['id', 'brand_id', 'category_id', 'is_new', 'is_popular', 'is_action', 'discount'], 'integer'],
             [['price'], 'number'],
 	        [['name', 'article'], 'string'],
+	        [['marks'], 'validateMarks'],
         ];
     }
 
@@ -35,6 +38,13 @@ class ProductSearch extends Product
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
+    }
+
+    public function validateMarks($attribute)
+    {
+    	if (!in_array($this->$attribute, static::getMarksList())) {
+    		$this->addError($attribute, 'Product mark is not in allowed list values');
+	    }
     }
 
     /**
@@ -65,9 +75,6 @@ class ProductSearch extends Product
 			        ],
 			        'price',
 			        'discount',
-			        'is_new',
-			        'is_popular',
-			        'is_action',
 		        ],
 	        ],
         ]);
@@ -94,6 +101,10 @@ class ProductSearch extends Product
 
 	    $query->andFilterWhere(['like', Product::tableName() . '.article', $this->article])
 		    ->andFilterWhere(['like', Product::tableName() . '.name', $this->name]);
+
+	    if ($this->marks) {
+	    	$query->andWhere([$this->marks => 1]);
+	    }
 
         return $dataProvider;
     }

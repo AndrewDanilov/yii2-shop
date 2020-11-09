@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use andrewdanilov\helpers\NestedCategoryHelper;
+use andrewdanilov\shop\common\models\Product;
 use andrewdanilov\shop\common\models\Category;
 use andrewdanilov\shop\common\models\Brand;
 use andrewdanilov\shop\backend\models\ProductSearch;
@@ -49,9 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		        'filter' => NestedCategoryHelper::getDropdownTree(Category::find()),
 		        'filterOptions' => ['style' => 'font-family:monospace;'],
 	        ],
-	        'is_new:boolean',
-	        'is_popular:boolean',
-	        'is_action:boolean',
+	        [
+	        	'attribute' => 'marks',
+	        	'value' => 'marksDelimitedString',
+	        	'filter' => Product::getMarksList(),
+			],
 
 	        [
 		        'class' => 'yii\grid\ActionColumn',

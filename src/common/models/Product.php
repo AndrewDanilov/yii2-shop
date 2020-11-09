@@ -124,6 +124,7 @@ class Product extends \yii\db\ActiveRecord
 	        'seo_title' => 'Seo Title',
 	        'seo_description' => 'Seo Description',
 	        'slug' => 'Seo Url',
+	        'marks' => 'Метки',
         ];
     }
 
@@ -229,5 +230,28 @@ class Product extends \yii\db\ActiveRecord
     	$categories = $this->getTag()->select('id')->indexBy('id')->column();
     	$categories = array_intersect_key($allCategories, $categories);
     	return implode(', ', $categories);
+    }
+
+    public function getMarksDelimitedString()
+    {
+    	$allMarks = static::getMarksList();
+    	$marks = [];
+	    foreach ($allMarks as $mark_key => $mark_value) {
+		    if ($this->$mark_key) {
+		    	$marks[] = $mark_value;
+		    }
+    	}
+    	return implode(', ', $marks);
+    }
+
+	//////////////////////////////////////////////////////////////////
+
+	public static function getMarksList()
+    {
+    	return [
+    		'is_new' => 'Новинка',
+		    'is_popular' => 'Популярный',
+		    'is_action' => 'Акция',
+	    ];
     }
 }
