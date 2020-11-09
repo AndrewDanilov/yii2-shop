@@ -8,6 +8,7 @@ use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\behaviors\LinkedProductsBehavior;
 use andrewdanilov\behaviors\ShopOptionBehavior;
 use andrewdanilov\behaviors\ValueTypeBehavior;
+use andrewdanilov\behaviors\ImagesBehavior;
 use andrewdanilov\InputImages\InputImages;
 use andrewdanilov\shop\common\models\Product;
 use andrewdanilov\shop\common\models\Category;
@@ -20,7 +21,7 @@ use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionsInit;
 use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionHtml;
 
 /* @var $this yii\web\View */
-/* @var $model Product|ShopOptionBehavior|LinkedProductsBehavior */
+/* @var $model Product|ImagesBehavior|ShopOptionBehavior|LinkedProductsBehavior */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -32,7 +33,7 @@ use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionHtml;
 
 	<?= $form->field($model, 'article')->textInput(['maxlength' => true]) ?>
 
-	<?= $form->field($model, 'images')->widget(InputImages::class) ?>
+	<?= $form->field($model, 'images')->widget(InputImages::class, ['multiple' => true]) ?>
 
 	<?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
