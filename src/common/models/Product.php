@@ -117,7 +117,7 @@ class Product extends \yii\db\ActiveRecord
             'category_id' => 'Категории',
             'tagIds' => 'Категории',
 	        'name' => 'Название',
-	        'is_new' => 'Новый',
+	        'is_new' => 'Новинка',
 	        'is_popular' => 'Популярный',
 	        'is_action' => 'Акция',
 	        'description' => 'Описание',

@@ -42,7 +42,7 @@ class ProductSearch extends Product
 
     public function validateMarks($attribute)
     {
-    	if (!in_array($this->$attribute, static::getMarksList())) {
+    	if (!in_array($this->$attribute, array_keys(static::getMarksList()))) {
     		$this->addError($attribute, 'Product mark is not in allowed list values');
 	    }
     }
