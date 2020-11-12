@@ -36,7 +36,7 @@ class OptionSearch extends Option
      */
     public function search($params)
     {
-        $query = Option::find()->joinWith(['tagRef'])->groupBy('id');
+        $query = Option::find();
 
         // add conditions that should always apply here
 
@@ -48,10 +48,7 @@ class OptionSearch extends Option
 		        ],
 		        'attributes' => [
 			        'id',
-			        'name' => [
-				        'asc' => ['name' => SORT_ASC],
-				        'desc' => ['name' => SORT_DESC],
-			        ],
+			        'name',
 			        'order',
 		        ],
 	        ],

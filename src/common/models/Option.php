@@ -131,8 +131,6 @@ class Option extends \yii\db\ActiveRecord
 	public function beforeDelete()
 	{
 		$this->unlinkAll('products', true);
-		$this->unlinkAll('categories', true);
-		$this->unlinkAll('groups', true);
 		return parent::beforeDelete();
 	}
 }

@@ -19,7 +19,9 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'categoryIds')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
-	<?= $form->field($model, 'groupIds')->checkboxList(Group::getGroupList()) ?>
+	<?php if (!empty($groupList = Group::getGroupList())) { ?>
+		<?= $form->field($model, 'groupIds')->checkboxList($groupList) ?>
+	<?php } ?>
 
 	<?= $form->field($model, 'order')->textInput() ?>
 

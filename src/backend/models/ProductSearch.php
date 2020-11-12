@@ -56,7 +56,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find()->joinWith(['brand', 'tagRef'])->groupBy('id');
+        $query = Product::find()->joinWith(['tagRef'])->groupBy('id');
 
         // add conditions that should always apply here
 
@@ -69,10 +69,7 @@ class ProductSearch extends Product
 		        'attributes' => [
 			        'id',
 			        'article',
-			        'name' => [
-				        'asc' => [Product::tableName() . '.name' => SORT_ASC],
-				        'desc' => [Product::tableName() . '.name' => SORT_DESC],
-			        ],
+			        'name',
 			        'price',
 			        'discount',
 		        ],
