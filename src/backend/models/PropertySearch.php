@@ -14,7 +14,6 @@ class PropertySearch extends Property
     {
         return [
             [['id', 'order'], 'integer'],
-            [['is_filtered'], 'boolean'],
             [['type', 'name'], 'string'],
         ];
     }
@@ -50,7 +49,6 @@ class PropertySearch extends Property
 			        'name',
 			        'type',
 			        'order',
-			        'is_filtered',
 		        ],
 	        ],
         ]);
@@ -68,7 +66,6 @@ class PropertySearch extends Property
             'id' => $this->id,
 	        'order' => $this->order,
 	        'type' => $this->type,
-	        'is_filtered' => $this->is_filtered,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

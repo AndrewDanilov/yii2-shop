@@ -7,8 +7,6 @@ use andrewdanilov\shop\common\models\Delivery;
 
 class DeliverySearch extends Delivery
 {
-	public $name;
-
     /**
      * @inheritdoc
      */
@@ -16,7 +14,7 @@ class DeliverySearch extends Delivery
     {
         return [
             [['id', 'order'], 'integer'],
-            [['name'], 'safe'],
+            [['name'], 'string'],
         ];
     }
 
@@ -50,10 +48,7 @@ class DeliverySearch extends Delivery
 		        ],
 		        'attributes' => [
 			        'id',
-			        'name' => [
-				        'asc' => ['name' => SORT_ASC],
-				        'desc' => ['name' => SORT_DESC],
-			        ],
+			        'name',
 			        'order',
 		        ],
 	        ],

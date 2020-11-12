@@ -41,7 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	            },
 	            'filter' => ValueTypeBehavior::getTypeList(),
             ],
-            'is_filtered:boolean',
             'order',
 
 	        [

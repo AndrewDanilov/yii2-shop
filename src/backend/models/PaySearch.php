@@ -7,8 +7,6 @@ use andrewdanilov\shop\common\models\Pay;
 
 class PaySearch extends Pay
 {
-	public $name;
-
     /**
      * @inheritdoc
      */
@@ -16,7 +14,7 @@ class PaySearch extends Pay
     {
         return [
             [['id', 'order'], 'integer'],
-	        [['name'], 'safe'],
+	        [['name'], 'string'],
         ];
     }
 

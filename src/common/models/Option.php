@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use andrewdanilov\behaviors\TagBehavior;
+
 /**
  * This is the model class for table "shop_option".
  *
@@ -8,6 +10,8 @@ namespace andrewdanilov\shop\common\models;
  * @property int $order
  * @property string $name
  * @property Product[] $products
+ * @property Category[] $categories
+ * @property Group[] $groups
  */
 class Option extends \yii\db\ActiveRecord
 {
@@ -17,12 +21,19 @@ class Option extends \yii\db\ActiveRecord
 	public function behaviors()
 	{
 		return [
-			[
-				'class' => 'andrewdanilov\behaviors\TagBehavior',
-				'referenceModelClass' => 'andrewdanilov\shop\common\models\CategoryOptions',
+			'category' => [
+				'class' => TagBehavior::class,
+				'referenceModelClass' => CategoryOptions::class,
 				'referenceModelAttribute' => 'option_id',
 				'referenceModelTagAttribute' => 'category_id',
-				'tagModelClass' => 'andrewdanilov\shop\common\models\Category',
+				'tagModelClass' => Category::class,
+			],
+			'group' => [
+				'class' => TagBehavior::class,
+				'referenceModelClass' => OptionGroups::class,
+				'referenceModelAttribute' => 'option_id',
+				'referenceModelTagAttribute' => 'group_id',
+				'tagModelClass' => Group::class,
 			],
 		];
 	}
@@ -57,7 +68,8 @@ class Option extends \yii\db\ActiveRecord
             'id' => 'ID',
             'order' => 'Порядок',
 	        'name' => 'Название',
-	        'tagIds' => 'Категории',
+	        'categoryIds' => 'Категории',
+	        'groupIds' => 'Группы свойств',
         ];
     }
 
@@ -66,11 +78,61 @@ class Option extends \yii\db\ActiveRecord
 		return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable(ProductOptions::tableName(), ['option_id' => 'id']);
 	}
 
+	public function getCategories()
+	{
+		return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable(CategoryOptions::tableName(), ['option_id' => 'id']);
+	}
+
+	public function getGroups()
+	{
+		return $this->hasMany(Group::class, ['id' => 'group_id'])->viaTable(OptionGroups::tableName(), ['option_id' => 'id']);
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	public function getCategoryIds()
+	{
+		$behavior = $this->getBehavior('category');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTagIds();
+		}
+		return [];
+	}
+
+	public function setCategoryIds($ids)
+	{
+		$behavior = $this->getBehavior('category');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->setTagIds($ids);
+		}
+		return [];
+	}
+
+	public function getGroupIds()
+	{
+		$behavior = $this->getBehavior('group');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTagIds();
+		}
+		return [];
+	}
+
+	public function setGroupIds($ids)
+	{
+		$behavior = $this->getBehavior('group');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->setTagIds($ids);
+		}
+		return [];
+	}
+
 	//////////////////////////////////////////////////////////////////
 
 	public function beforeDelete()
 	{
 		$this->unlinkAll('products', true);
+		$this->unlinkAll('categories', true);
+		$this->unlinkAll('groups', true);
 		return parent::beforeDelete();
 	}
 }

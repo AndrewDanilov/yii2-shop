@@ -7,8 +7,6 @@ use andrewdanilov\shop\common\models\Brand;
 
 class BrandSearch extends Brand
 {
-	public $name;
-
     /**
      * @inheritdoc
      */
@@ -16,7 +14,8 @@ class BrandSearch extends Brand
     {
         return [
             [['id', 'order'], 'integer'],
-            [['image', 'is_favorite', 'name'], 'safe'],
+            [['image', 'name'], 'string'],
+            [['is_favorite'], 'boolean'],
         ];
     }
 
@@ -73,10 +72,10 @@ class BrandSearch extends Brand
         $query->andFilterWhere([
 	        'id' => $this->id,
 	        'order' => $this->order,
+	        'is_favorite' => $this->is_favorite,
         ]);
 
         $query->andFilterWhere(['like', 'image', $this->image])
-            ->andFilterWhere(['like', 'is_favorite', $this->is_favorite])
 	        ->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;

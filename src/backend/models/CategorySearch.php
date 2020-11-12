@@ -7,8 +7,6 @@ use andrewdanilov\shop\common\models\Category;
 
 class CategorySearch extends Category
 {
-	public $name;
-
     /**
      * @inheritdoc
      */
@@ -16,7 +14,7 @@ class CategorySearch extends Category
     {
         return [
             [['id', 'order'], 'integer'],
-            [['image', 'name'], 'safe'],
+            [['image', 'name'], 'string'],
         ];
     }
 

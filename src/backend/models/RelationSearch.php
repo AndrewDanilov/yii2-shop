@@ -14,7 +14,7 @@ class RelationSearch extends Relation
     {
         return [
             [['id'], 'integer'],
-            [['key', 'name'], 'safe'],
+            [['key', 'name'], 'string'],
         ];
     }
 

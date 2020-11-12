@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use andrewdanilov\behaviors\TagBehavior;
+
 /**
  * This is the model class for table "shop_property".
  *
@@ -8,8 +10,9 @@ namespace andrewdanilov\shop\common\models;
  * @property string $type
  * @property int $order
  * @property string $name
- * @property boolean $is_filtered
  * @property Product[] $products
+ * @property Category[] $categories
+ * @property Group[] $groups
  */
 class Property extends \yii\db\ActiveRecord
 {
@@ -19,12 +22,19 @@ class Property extends \yii\db\ActiveRecord
 	public function behaviors()
 	{
 		return [
-			[
-				'class' => 'andrewdanilov\behaviors\TagBehavior',
-				'referenceModelClass' => 'andrewdanilov\shop\common\models\CategoryProperties',
+			'category' => [
+				'class' => TagBehavior::class,
+				'referenceModelClass' => CategoryProperties::class,
 				'referenceModelAttribute' => 'property_id',
 				'referenceModelTagAttribute' => 'category_id',
-				'tagModelClass' => 'andrewdanilov\shop\common\models\Category',
+				'tagModelClass' => Category::class,
+			],
+			'group' => [
+				'class' => TagBehavior::class,
+				'referenceModelClass' => PropertyGroups::class,
+				'referenceModelAttribute' => 'property_id',
+				'referenceModelTagAttribute' => 'group_id',
+				'tagModelClass' => Group::class,
 			],
 		];
 	}
@@ -46,8 +56,7 @@ class Property extends \yii\db\ActiveRecord
             [['type', 'name'], 'required'],
             [['order'], 'integer'],
 	        [['name'], 'string', 'max' => 255],
-            [['is_filtered'], 'boolean'],
-	        [['order', 'is_filtered'], 'default', 'value' => 0],
+	        [['order'], 'default', 'value' => 0],
 	        [['type'], 'string', 'max' => 10],
         ];
     }
@@ -62,8 +71,8 @@ class Property extends \yii\db\ActiveRecord
             'type' => 'Тип',
             'order' => 'Порядок',
             'name' => 'Название',
-            'tagIds' => 'Категории',
-            'is_filtered' => 'Использовать в фильтре',
+            'categoryIds' => 'Категории',
+            'groupIds' => 'Группы свойств',
         ];
     }
 
@@ -72,11 +81,61 @@ class Property extends \yii\db\ActiveRecord
 		return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable(ProductProperties::tableName(), ['property_id' => 'id']);
 	}
 
+	public function getCategories()
+	{
+		return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable(CategoryProperties::tableName(), ['property_id' => 'id']);
+	}
+
+	public function getGroups()
+	{
+		return $this->hasMany(Group::class, ['id' => 'group_id'])->viaTable(PropertyGroups::tableName(), ['property_id' => 'id']);
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	public function getCategoryIds()
+	{
+		$behavior = $this->getBehavior('category');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTagIds();
+		}
+		return [];
+	}
+
+	public function setCategoryIds($ids)
+	{
+		$behavior = $this->getBehavior('category');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->setTagIds($ids);
+		}
+		return [];
+	}
+
+	public function getGroupIds()
+	{
+		$behavior = $this->getBehavior('group');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTagIds();
+		}
+		return [];
+	}
+
+	public function setGroupIds($ids)
+	{
+		$behavior = $this->getBehavior('group');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->setTagIds($ids);
+		}
+		return [];
+	}
+
 	//////////////////////////////////////////////////////////////////
 
 	public function beforeDelete()
 	{
 		$this->unlinkAll('products', true);
+		$this->unlinkAll('categories', true);
+		$this->unlinkAll('groups', true);
 		return parent::beforeDelete();
 	}
 }

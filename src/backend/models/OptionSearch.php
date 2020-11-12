@@ -7,8 +7,6 @@ use andrewdanilov\shop\common\models\Option;
 
 class OptionSearch extends Option
 {
-	public $name;
-
 	/**
      * @inheritdoc
      */
@@ -16,7 +14,7 @@ class OptionSearch extends Option
     {
         return [
             [['id', 'order'], 'integer'],
-	        [['name'], 'safe'],
+	        [['name'], 'string'],
         ];
     }
 
