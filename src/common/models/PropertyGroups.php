@@ -13,7 +13,7 @@ class PropertyGroups extends ActiveRecord
 	public function rules()
 	{
 		return [
-			[['group_id', 'property_id'], 'requred'],
+			[['group_id', 'property_id'], 'required'],
 			[['group_id', 'property_id'], 'integer'],
 		];
 	}

@@ -13,7 +13,7 @@ class OptionGroups extends ActiveRecord
 	public function rules()
 	{
 		return [
-			[['group_id', 'option_id'], 'requred'],
+			[['group_id', 'option_id'], 'required'],
 			[['group_id', 'option_id'], 'integer'],
 		];
 	}

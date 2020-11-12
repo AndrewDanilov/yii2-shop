@@ -22,7 +22,7 @@ class Group extends ActiveRecord
 	public function rules()
 	{
 		return [
-			[['name'], 'requred'],
+			[['name'], 'required'],
 			[['name'], 'string', 'max' => 255],
 			[['order'], 'integer'],
 			[['order'], 'default', 'value' => 0],
