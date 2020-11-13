@@ -179,7 +179,33 @@ class Product extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @param null|string|array $productOptionsIds
+	 * @param int $group_id
+	 * @return ProductProperties[]
+	 */
+	public function getGroupProductProperties($group_id)
+	{
+		/* @var $behavior ShopOptionBehavior */
+		$behavior = $this->getBehavior('properties');
+		$productProperties = $behavior->getOptionsRef();
+		$productProperties->innerJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . ProductProperties::tableName() . '.property_id');
+		$productProperties->andWhere([PropertyGroups::tableName() . '.group_id' => $group_id]);
+		return $productProperties->all();
+	}
+
+	/**
+	 * @return ProductProperties[]
+	 */
+	public function getFilteredProductProperties()
+	{
+		/* @var $behavior ShopOptionBehavior */
+		$behavior = $this->getBehavior('properties');
+		$productProperties = $behavior->getOptionsRef();
+		$productProperties->where(['is_filtered' => 1]);
+		return $productProperties->all();
+	}
+
+	/**
+	 * @param array|string|null $productOptionsIds
 	 * @return ProductOptions[]
 	 */
 	public function getProductOptions($productOptionsIds=null)
@@ -193,6 +219,18 @@ class Product extends \yii\db\ActiveRecord
 			}
 			$productOptions->where(['id' => $productOptionsIds]);
 		}
+		return $productOptions->all();
+	}
+
+	/**
+	 * @return ProductOptions[]
+	 */
+	public function getFilteredProductOptions()
+	{
+		/* @var $behavior ShopOptionBehavior */
+		$behavior = $this->getBehavior('options');
+		$productOptions = $behavior->getOptionsRef();
+		$productOptions->where(['is_filtered' => 1]);
 		return $productOptions->all();
 	}
 

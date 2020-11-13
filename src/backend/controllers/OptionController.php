@@ -31,6 +31,7 @@ class OptionController extends BaseController
     public function actionCreate()
     {
         $model = new Option();
+        $model->is_filtered = 1;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);

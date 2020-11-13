@@ -46,7 +46,7 @@ class OptionSearch extends Option
     public function search($params)
     {
         $query = Option::find()
-	        ->leftJoin(CategoryOptions::tableName(), CategoryOptions::tableName() . '.property_id = ' . Option::tableName() . '.id');
+	        ->leftJoin(CategoryOptions::tableName(), CategoryOptions::tableName() . '.option_id = ' . Option::tableName() . '.id');
 
 
         // add conditions that should always apply here
