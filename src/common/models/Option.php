@@ -62,7 +62,7 @@ class Option extends \yii\db\ActiveRecord
             'order' => 'Порядок',
 	        'name' => 'Название',
 	        'categoryIds' => 'Категории',
-	        'groupIds' => 'Группы свойств',
+	        'category_id' => 'Категории',
 	        'is_filtered' => 'Использовать в фильтре',
         ];
     }
