@@ -94,6 +94,7 @@ $shop_menu_items = [
 	['label' => 'Бренды', 'icon' => 'leaf', 'url' => ['/shop/brand']],
 	['label' => 'Свойства', 'icon' => 'list', 'url' => ['/shop/property']],
 	['label' => 'Опции', 'icon' => 'check-square', 'url' => ['/shop/option']],
+	['label' => 'Группы свойств', 'icon' => 'grip-horizontal', 'url' => ['/shop/group']],
 	['label' => 'Связи', 'icon' => 'link', 'url' => ['/shop/relation']],
 	['label' => 'Способы оплаты', 'icon' => 'wallet', 'url' => ['/shop/pay']],
 	['label' => 'Способы доставки', 'icon' => 'truck', 'url' => ['/shop/delivery']],

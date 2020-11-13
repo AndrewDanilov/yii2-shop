@@ -40,41 +40,44 @@ class Property extends \yii\db\ActiveRecord
 	}
 
 	/**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'shop_property';
-    }
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return 'shop_property';
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['type', 'name'], 'required'],
-            [['order'], 'integer'],
-	        [['name'], 'string', 'max' => 255],
-	        [['order'], 'default', 'value' => 0],
-	        [['type'], 'string', 'max' => 10],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return [
+			[['type', 'name'], 'required'],
+			[['order'], 'integer'],
+			[['name'], 'string', 'max' => 255],
+			[['order'], 'default', 'value' => 0],
+			[['type'], 'string', 'max' => 10],
+			[['categoryIds', 'groupIds'], 'safe'],
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'type' => 'Тип',
-            'order' => 'Порядок',
-            'name' => 'Название',
-            'categoryIds' => 'Категории',
-            'groupIds' => 'Группы свойств',
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => 'ID',
+			'type' => 'Тип',
+			'order' => 'Порядок',
+			'name' => 'Название',
+			'categoryIds' => 'Категории',
+			'category_id' => 'Категории',
+			'groupIds' => 'Группы свойств',
+			'group_id' => 'Группы свойств',
+		];
+	}
 
 	public function getProducts()
 	{
@@ -83,12 +86,20 @@ class Property extends \yii\db\ActiveRecord
 
 	public function getCategories()
 	{
-		return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable(CategoryProperties::tableName(), ['property_id' => 'id']);
+		$behavior = $this->getBehavior('category');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTag();
+		}
+		return null;
 	}
 
 	public function getGroups()
 	{
-		return $this->hasMany(Group::class, ['id' => 'group_id'])->viaTable(PropertyGroups::tableName(), ['property_id' => 'id']);
+		$behavior = $this->getBehavior('group');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTag();
+		}
+		return null;
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -134,6 +145,24 @@ class Property extends \yii\db\ActiveRecord
 	public function beforeDelete()
 	{
 		$this->unlinkAll('products', true);
-	return parent::beforeDelete();
+		return parent::beforeDelete();
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	public function categoriesDelimitedString()
+	{
+		$allCategories = Category::getCategoriesList();
+		$categories = $this->getCategoryIds();
+		$categories = array_intersect_key($allCategories, array_flip($categories));
+		return implode(', ', $categories);
+	}
+
+	public function groupsDelimitedString()
+	{
+		$allGroups = Group::getGroupList();
+		$groups = $this->getGroupIds();
+		$groups = array_intersect_key($allGroups, array_flip($groups));
+		return implode(', ', $groups);
 	}
 }

@@ -4,7 +4,10 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use andrewdanilov\behaviors\TagBehavior;
 use andrewdanilov\behaviors\ValueTypeBehavior;
+use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\common\models\Property;
+use andrewdanilov\shop\common\models\Group;
+use andrewdanilov\shop\common\models\Category;
 use andrewdanilov\shop\backend\models\PropertySearch;
 
 /* @var $this yii\web\View */
@@ -16,38 +19,55 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="shop-attribute-index">
 
-    <p>
-        <?= Html::a('Новое свойство', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+	<p>
+		<?= Html::a('Новое свойство', ['create'], ['class' => 'btn btn-success']) ?>
+	</p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-	        [
-		        'attribute' => 'id',
-		        'headerOptions' => ['width' => 100],
-	        ],
-	        'name',
-            [
-            	'attribute' => 'type',
-	            'value' => function($model) {
-    	            /* @var $model Property */
-    	            $typeList = ValueTypeBehavior::getTypeList();
-    	            if (isset($typeList[$model->type])) {
-		                return $typeList[$model->type];
-	                }
-    	            return $model->type;
-	            },
-	            'filter' => ValueTypeBehavior::getTypeList(),
-            ],
-            'order',
+	<?= GridView::widget([
+		'dataProvider' => $dataProvider,
+		'filterModel' => $searchModel,
+		'columns' => [
+			[
+				'attribute' => 'id',
+				'headerOptions' => ['width' => 100],
+			],
+			'name',
+			[
+				'attribute' => 'type',
+				'value' => function($model) {
+					/* @var $model Property */
+					$typeList = ValueTypeBehavior::getTypeList();
+					if (isset($typeList[$model->type])) {
+						return $typeList[$model->type];
+					}
+					return $model->type;
+				},
+				'filter' => ValueTypeBehavior::getTypeList(),
+			],
+			[
+				'attribute' => 'category_id',
+				'value' => function($model) {
+					/* @var $model Property */
+					return $model->categoriesDelimitedString();
+				},
+				'filter' => NestedCategoryHelper::getDropdownTree(Category::find()),
+				'filterOptions' => ['style' => 'font-family:monospace;'],
+			],
+			[
+				'attribute' => 'group_id',
+				'value' => function($model) {
+					/* @var $model Property */
+					return $model->groupsDelimitedString();
+				},
+				'filter' => Group::getGroupList(),
+			],
+			'order',
 
-	        [
-		        'class' => 'yii\grid\ActionColumn',
-		        'template' => '{update}&nbsp;&nbsp;&nbsp;&nbsp;{delete}',
-		        'contentOptions' => ['style' => 'white-space: nowrap;'],
-	        ],
-        ],
-    ]); ?>
+			[
+				'class' => 'yii\grid\ActionColumn',
+				'template' => '{update}&nbsp;&nbsp;&nbsp;&nbsp;{delete}',
+				'contentOptions' => ['style' => 'white-space: nowrap;'],
+			],
+		],
+	]); ?>
 </div>
