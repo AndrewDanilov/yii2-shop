@@ -46,10 +46,8 @@ class OptionSearch extends Option
     public function search($params)
     {
         $query = Option::find()
-	        ->leftJoin(CategoryOptions::tableName(), CategoryOptions::tableName() . '.option_id = ' . Option::tableName() . '.id');
-
-
-        // add conditions that should always apply here
+	        ->leftJoin(CategoryOptions::tableName(), CategoryOptions::tableName() . '.option_id = ' . Option::tableName() . '.id')
+	        ->groupBy(Option::tableName() . '.id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

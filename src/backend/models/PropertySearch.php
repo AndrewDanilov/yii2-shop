@@ -50,7 +50,8 @@ class PropertySearch extends Property
 	{
 		$query = Property::find()
 			->leftJoin(CategoryProperties::tableName(), CategoryProperties::tableName() . '.property_id = ' . Property::tableName() . '.id')
-			->leftJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . Property::tableName() . '.id');
+			->leftJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . Property::tableName() . '.id')
+			->groupBy(Property::tableName() . '.id');
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
