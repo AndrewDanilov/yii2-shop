@@ -22,7 +22,7 @@ class OptionSearch extends Option
     public function rules()
     {
         return [
-            [['id', 'order', 'category_id', 'is_filter'], 'integer'],
+            [['id', 'order', 'category_id', 'is_filtered'], 'integer'],
 	        [['name'], 'string'],
         ];
     }

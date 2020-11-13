@@ -25,7 +25,7 @@ class PropertySearch extends Property
 	public function rules()
 	{
 		return [
-			[['id', 'order', 'category_id', 'group_id', 'is_filter'], 'integer'],
+			[['id', 'order', 'category_id', 'group_id', 'is_filtered'], 'integer'],
 			[['type', 'name'], 'string'],
 		];
 	}
