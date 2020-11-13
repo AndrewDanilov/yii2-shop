@@ -25,7 +25,7 @@ class PropertySearch extends Property
 	public function rules()
 	{
 		return [
-			[['id', 'order', 'category_id', 'group_id'], 'integer'],
+			[['id', 'order', 'category_id', 'group_id', 'is_filter'], 'integer'],
 			[['type', 'name'], 'string'],
 		];
 	}
@@ -62,6 +62,7 @@ class PropertySearch extends Property
 					'id',
 					'name',
 					'type',
+					'is_filtered',
 					'order',
 				],
 			],
@@ -80,11 +81,12 @@ class PropertySearch extends Property
 			Property::tableName() . '.id' => $this->id,
 			Property::tableName() . '.order' => $this->order,
 			Property::tableName() . '.type' => $this->type,
+			Property::tableName() . '.is_filtered' => $this->is_filtered,
 			CategoryProperties::tableName() . '.category_id' => $this->category_id,
 			PropertyGroups::tableName() . '.group_id' => $this->group_id,
 		]);
 
-		$query->andFilterWhere(['like', 'name', $this->name]);
+		$query->andFilterWhere(['like', Property::tableName() . '.name', $this->name]);
 
 		return $dataProvider;
 	}

@@ -61,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				},
 				'filter' => Group::getGroupList(),
 			],
+			'is_filtered:boolean',
 			'order',
 
 			[

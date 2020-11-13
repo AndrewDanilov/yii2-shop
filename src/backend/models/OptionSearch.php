@@ -4,16 +4,25 @@ namespace andrewdanilov\shop\backend\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use andrewdanilov\shop\common\models\Option;
+use andrewdanilov\shop\common\models\CategoryOptions;
 
+/**
+ * Class OptionSearch
+ *
+ * @package andrewdanilov\shop\backend\models
+ * @property int $category_id
+ */
 class OptionSearch extends Option
 {
+	public $category_id;
+
 	/**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'order'], 'integer'],
+            [['id', 'order', 'category_id', 'is_filter'], 'integer'],
 	        [['name'], 'string'],
         ];
     }
@@ -36,7 +45,9 @@ class OptionSearch extends Option
      */
     public function search($params)
     {
-        $query = Option::find();
+        $query = Option::find()
+	        ->leftJoin(CategoryOptions::tableName(), CategoryOptions::tableName() . '.property_id = ' . Option::tableName() . '.id');
+
 
         // add conditions that should always apply here
 
@@ -49,6 +60,7 @@ class OptionSearch extends Option
 		        'attributes' => [
 			        'id',
 			        'name',
+			        'is_filtered',
 			        'order',
 		        ],
 	        ],
@@ -64,11 +76,13 @@ class OptionSearch extends Option
 
         // grid filtering conditions
         $query->andFilterWhere([
-	        'id' => $this->id,
-	        'order' => $this->order,
+	        Option::tableName() . '.id' => $this->id,
+	        Option::tableName() . '.is_filtered' => $this->is_filtered,
+	        Option::tableName() . '.order' => $this->order,
+	        CategoryOptions::tableName() . '.category_id' => $this->category_id,
         ]);
 
-	    $query->andFilterWhere(['like', 'name', $this->name]);
+	    $query->andFilterWhere(['like', Option::tableName() . '.name', $this->name]);
 
 	    return $dataProvider;
     }

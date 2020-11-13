@@ -9,9 +9,9 @@ use andrewdanilov\behaviors\TagBehavior;
  * @property int $id
  * @property int $order
  * @property string $name
+ * @property bool $is_filtered
  * @property Product[] $products
  * @property Category[] $categories
- * @property Group[] $groups
  */
 class Option extends \yii\db\ActiveRecord
 {
@@ -27,13 +27,6 @@ class Option extends \yii\db\ActiveRecord
 				'referenceModelAttribute' => 'option_id',
 				'referenceModelTagAttribute' => 'category_id',
 				'tagModelClass' => Category::class,
-			],
-			'group' => [
-				'class' => TagBehavior::class,
-				'referenceModelClass' => OptionGroups::class,
-				'referenceModelAttribute' => 'option_id',
-				'referenceModelTagAttribute' => 'group_id',
-				'tagModelClass' => Group::class,
 			],
 		];
 	}
@@ -53,9 +46,9 @@ class Option extends \yii\db\ActiveRecord
     {
         return [
 	        [['name'], 'required'],
-            [['order'], 'integer'],
+            [['order', 'is_filtered'], 'integer'],
 	        [['name'], 'string', 'max' => 255],
-	        [['order'], 'default', 'value' => 0],
+	        [['order', 'is_filtered'], 'default', 'value' => 0],
         ];
     }
 
@@ -70,6 +63,7 @@ class Option extends \yii\db\ActiveRecord
 	        'name' => 'Название',
 	        'categoryIds' => 'Категории',
 	        'groupIds' => 'Группы свойств',
+	        'is_filtered' => 'Использовать в фильтре',
         ];
     }
 
@@ -80,12 +74,11 @@ class Option extends \yii\db\ActiveRecord
 
 	public function getCategories()
 	{
-		return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable(CategoryOptions::tableName(), ['option_id' => 'id']);
-	}
-
-	public function getGroups()
-	{
-		return $this->hasMany(Group::class, ['id' => 'group_id'])->viaTable(OptionGroups::tableName(), ['option_id' => 'id']);
+		$behavior = $this->getBehavior('category');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTag();
+		}
+		return null;
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -108,29 +101,21 @@ class Option extends \yii\db\ActiveRecord
 		return [];
 	}
 
-	public function getGroupIds()
-	{
-		$behavior = $this->getBehavior('group');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTagIds();
-		}
-		return [];
-	}
-
-	public function setGroupIds($ids)
-	{
-		$behavior = $this->getBehavior('group');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->setTagIds($ids);
-		}
-		return [];
-	}
-
 	//////////////////////////////////////////////////////////////////
 
 	public function beforeDelete()
 	{
 		$this->unlinkAll('products', true);
 		return parent::beforeDelete();
+	}
+
+	//////////////////////////////////////////////////////////////////
+
+	public function categoriesDelimitedString()
+	{
+		$allCategories = Category::getCategoriesList();
+		$categories = $this->getCategoryIds();
+		$categories = array_intersect_key($allCategories, array_flip($categories));
+		return implode(', ', $categories);
 	}
 }

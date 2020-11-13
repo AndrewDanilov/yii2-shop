@@ -10,6 +10,7 @@ use andrewdanilov\behaviors\TagBehavior;
  * @property string $type
  * @property int $order
  * @property string $name
+ * @property bool $is_filtered
  * @property Product[] $products
  * @property Category[] $categories
  * @property Group[] $groups
@@ -54,9 +55,9 @@ class Property extends \yii\db\ActiveRecord
 	{
 		return [
 			[['type', 'name'], 'required'],
-			[['order'], 'integer'],
+			[['order', 'is_filtered'], 'integer'],
 			[['name'], 'string', 'max' => 255],
-			[['order'], 'default', 'value' => 0],
+			[['order', 'is_filtered'], 'default', 'value' => 0],
 			[['type'], 'string', 'max' => 10],
 			[['categoryIds', 'groupIds'], 'safe'],
 		];
@@ -76,6 +77,7 @@ class Property extends \yii\db\ActiveRecord
 			'category_id' => 'Категории',
 			'groupIds' => 'Группы свойств',
 			'group_id' => 'Группы свойств',
+			'is_filtered' => 'Использовать в фильтре',
 		];
 	}
 

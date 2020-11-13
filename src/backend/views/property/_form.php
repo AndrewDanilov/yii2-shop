@@ -28,6 +28,8 @@ use andrewdanilov\shop\common\models\Category;
 		<?= $form->field($model, 'groupIds')->checkboxList($groupList) ?>
 	<?php } ?>
 
+    <?= $form->field($model, 'is_filtered')->checkbox() ?>
+
     <?= $form->field($model, 'order')->textInput() ?>
 
     <div class="form-group">

@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use andrewdanilov\helpers\NestedCategoryHelper;
+use andrewdanilov\shop\common\models\Option;
+use andrewdanilov\shop\common\models\Category;
 
 /* @var $this yii\web\View */
 /* @var $searchModel andrewdanilov\shop\backend\models\OptionSearch */
@@ -25,6 +28,16 @@ $this->params['breadcrumbs'][] = $this->title;
 		        'headerOptions' => ['width' => 100],
 	        ],
 	        'name',
+	        [
+		        'attribute' => 'category_id',
+		        'value' => function($model) {
+			        /* @var $model Option */
+			        return $model->categoriesDelimitedString();
+		        },
+		        'filter' => NestedCategoryHelper::getDropdownTree(Category::find()),
+		        'filterOptions' => ['style' => 'font-family:monospace;'],
+	        ],
+	        'is_filtered:boolean',
             'order',
 
 	        [
