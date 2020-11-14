@@ -26,41 +26,41 @@ class ProductProperties extends \yii\db\ActiveRecord
 	}
 
 	/**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'shop_product_properties';
-    }
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return 'shop_product_properties';
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['property_id', 'product_id', 'value'], 'required'],
-            [['property_id', 'product_id'], 'integer'],
-	        [['value'], 'string'],
-	        [['property_id', 'product_id'], 'unique', 'targetAttribute' => ['property_id', 'product_id']],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return [
+			[['property_id', 'product_id', 'value'], 'required'],
+			[['property_id', 'product_id'], 'integer'],
+			[['value'], 'safe'],
+			[['property_id', 'product_id'], 'unique', 'targetAttribute' => ['property_id', 'product_id']],
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'property_id' => 'Property ID',
-            'product_id' => 'Product ID',
-	        'value' => 'Value',
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => 'ID',
+			'property_id' => 'Property ID',
+			'product_id' => 'Product ID',
+			'value' => 'Value',
+		];
+	}
 
-    public function getProperty()
-    {
-    	return $this->hasOne(Property::class, ['id' => 'property_id']);
-    }
+	public function getProperty()
+	{
+		return $this->hasOne(Property::class, ['id' => 'property_id']);
+	}
 }
