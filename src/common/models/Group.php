@@ -8,6 +8,7 @@ use yii\db\ActiveRecord;
  *
  * @package andrewdanilov\shop\common\models
  * @property string $name
+ * @property string $code
  * @property int $order
  * @property Property[] $properties
  * @property Option[] $options
@@ -22,8 +23,8 @@ class Group extends ActiveRecord
 	public function rules()
 	{
 		return [
-			[['name'], 'required'],
-			[['name'], 'string', 'max' => 255],
+			[['name', 'code'], 'required'],
+			[['name', 'code'], 'string', 'max' => 255],
 			[['order'], 'integer'],
 			[['order'], 'default', 'value' => 0],
 		];
@@ -33,6 +34,7 @@ class Group extends ActiveRecord
 	{
 		return [
 			'name' => 'Наименование группы',
+			'code' => 'Код группы',
 			'order' => 'Порядок',
 		];
 	}
@@ -40,11 +42,6 @@ class Group extends ActiveRecord
 	public function getProperties()
 	{
 		return $this->hasMany(Property::class, ['id' => 'property_id'])->viaTable(PropertyGroups::tableName(), ['group_id' => 'id']);
-	}
-
-	public function getOptions()
-	{
-		return $this->hasMany(Property::class, ['id' => 'property_id'])->viaTable(OptionGroups::tableName(), ['group_id' => 'id']);
 	}
 
 	public static function getGroupList()

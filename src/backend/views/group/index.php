@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		        'headerOptions' => ['width' => 100],
 	        ],
 	        'name',
+	        'code',
             'order',
 
 	        [

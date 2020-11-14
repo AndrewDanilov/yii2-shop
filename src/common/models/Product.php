@@ -179,16 +179,17 @@ class Product extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @param int $group_id
+	 * @param string $group_code
 	 * @return ProductProperties[]
 	 */
-	public function getGroupProductProperties($group_id)
+	public function getGroupProductProperties($group_code)
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
 		$productProperties = $behavior->getOptionsRef();
 		$productProperties->innerJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . ProductProperties::tableName() . '.property_id');
-		$productProperties->andWhere([PropertyGroups::tableName() . '.group_id' => $group_id]);
+		$productProperties->innerJoin(Group::tableName(), Group::tableName() . '.id = ' . PropertyGroups::tableName() . '.group_id');
+		$productProperties->andWhere([Group::tableName() . '.code' => $group_code]);
 		return $productProperties->all();
 	}
 
