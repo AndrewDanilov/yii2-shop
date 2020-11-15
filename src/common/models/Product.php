@@ -1,9 +1,9 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
-use andrewdanilov\behaviors\ShopOptionBehavior;
 use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
+use andrewdanilov\behaviors\ShopOptionBehavior;
 
 /**
  * This is the model class for table "shop_product".
@@ -79,82 +79,82 @@ class Product extends \yii\db\ActiveRecord
 	}
 
 	/**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'shop_product';
-    }
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return 'shop_product';
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-	        [['name'], 'required'],
-	        [['brand_id', 'discount'], 'integer'],
-	        [['is_new', 'is_popular', 'is_action'], 'boolean'],
-            [['article', 'name', 'seo_title', 'slug'], 'string', 'max' => 255],
-            [['price'], 'number'],
-            [['price', 'discount', 'is_new', 'is_popular', 'is_action'], 'default', 'value' => 0],
-	        [['description', 'seo_description'], 'string'],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return [
+			[['name'], 'required'],
+			[['brand_id', 'discount'], 'integer'],
+			[['is_new', 'is_popular', 'is_action'], 'boolean'],
+			[['article', 'name', 'seo_title', 'slug'], 'string', 'max' => 255],
+			[['price'], 'number'],
+			[['price', 'discount', 'is_new', 'is_popular', 'is_action'], 'default', 'value' => 0],
+			[['description', 'seo_description'], 'string'],
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'article' => 'Артикул',
-            'image' => 'Изображение',
-            'brand_id' => 'Бренд',
-            'price' => 'Цена',
-            'discount' => 'Скидка',
-            'category_id' => 'Категории',
-            'tagIds' => 'Категории',
-	        'name' => 'Название',
-	        'is_new' => 'Новинка',
-	        'is_popular' => 'Популярный',
-	        'is_action' => 'Акция',
-	        'description' => 'Описание',
-	        'seo_title' => 'Seo Title',
-	        'seo_description' => 'Seo Description',
-	        'slug' => 'Seo Url',
-	        'marks' => 'Метки',
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => 'ID',
+			'article' => 'Артикул',
+			'image' => 'Изображение',
+			'brand_id' => 'Бренд',
+			'price' => 'Цена',
+			'discount' => 'Скидка',
+			'category_id' => 'Категории',
+			'tagIds' => 'Категории',
+			'name' => 'Название',
+			'is_new' => 'Новинка',
+			'is_popular' => 'Популярный',
+			'is_action' => 'Акция',
+			'description' => 'Описание',
+			'seo_title' => 'Seo Title',
+			'seo_description' => 'Seo Description',
+			'slug' => 'Seo Url',
+			'marks' => 'Метки',
+		];
+	}
 
-    public function getBrand()
-    {
-    	return $this->hasOne(Brand::class, ['id' => 'brand_id']);
-    }
+	public function getBrand()
+	{
+		return $this->hasOne(Brand::class, ['id' => 'brand_id']);
+	}
 
-    public function getOrders()
-    {
-    	return $this->hasMany(Order::class, ['id' => 'order_id'])->viaTable(OrderProducts::tableName(), ['product_id' => 'id']);
-    }
+	public function getOrders()
+	{
+		return $this->hasMany(Order::class, ['id' => 'order_id'])->viaTable(OrderProducts::tableName(), ['product_id' => 'id']);
+	}
 
-    public function getAvailableCategoryProperties()
-    {
-    	return $this->hasMany(CategoryProperties::class, ['category_id' => 'id'])->via('tag');
-    }
+	public function getAvailableCategoryProperties()
+	{
+		return $this->hasMany(CategoryProperties::class, ['category_id' => 'id'])->via('tag');
+	}
 
-    public function getAvailableCategoryOptions()
-    {
-    	return $this->hasMany(CategoryOptions::class, ['category_id' => 'id'])->via('tag');
-    }
+	public function getAvailableCategoryOptions()
+	{
+		return $this->hasMany(CategoryOptions::class, ['category_id' => 'id'])->via('tag');
+	}
 
-    public function getAvailableProperties() {
-    	return $this->hasMany(Property::class, ['id' => 'property_id'])->via('availableCategoryProperties');
-    }
+	public function getAvailableProperties() {
+		return $this->hasMany(Property::class, ['id' => 'property_id'])->via('availableCategoryProperties');
+	}
 
-    public function getAvailableOptions() {
-    	return $this->hasMany(Option::class, ['id' => 'option_id'])->via('availableCategoryOptions');
-    }
+	public function getAvailableOptions() {
+		return $this->hasMany(Option::class, ['id' => 'option_id'])->via('availableCategoryOptions');
+	}
 
 	//////////////////////////////////////////////////////////////////
 
@@ -166,7 +166,7 @@ class Product extends \yii\db\ActiveRecord
 		return parent::beforeSave($insert);
 	}
 
-    //////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	/**
 	 * @return ProductProperties[]
@@ -245,7 +245,7 @@ class Product extends \yii\db\ActiveRecord
 		return $behavior->getOptionsRef()->orderBy(ProductOptions::tableName() . '.id')->groupBy('option_id')->all();
 	}
 
-    //////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
 	public function getPriceWithOptions($productOptionsIds=null)
 	{
@@ -261,36 +261,36 @@ class Product extends \yii\db\ActiveRecord
 		return $price;
 	}
 
-    //////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////
 
-    public function getCategoriesDelimitedString()
-    {
-    	$allCategories = Category::getCategoriesList();
-    	$categories = $this->getTag()->select('id')->indexBy('id')->column();
-    	$categories = array_intersect_key($allCategories, $categories);
-    	return implode(', ', $categories);
-    }
+	public function getCategoriesDelimitedString()
+	{
+		$allCategories = Category::getCategoriesList();
+		$categories = $this->getTag()->select('id')->indexBy('id')->column();
+		$categories = array_intersect_key($allCategories, $categories);
+		return implode(', ', $categories);
+	}
 
-    public function getMarksDelimitedString()
-    {
-    	$allMarks = static::getMarksList();
-    	$marks = [];
-	    foreach ($allMarks as $mark_key => $mark_value) {
-		    if ($this->$mark_key) {
-		    	$marks[] = $mark_value;
-		    }
-    	}
-    	return implode(', ', $marks);
-    }
+	public function getMarksDelimitedString()
+	{
+		$allMarks = static::getMarksList();
+		$marks = [];
+		foreach ($allMarks as $mark_key => $mark_value) {
+			if ($this->$mark_key) {
+				$marks[] = $mark_value;
+			}
+		}
+		return implode(', ', $marks);
+	}
 
 	//////////////////////////////////////////////////////////////////
 
 	public static function getMarksList()
-    {
-    	return [
-    		'is_new' => 'Новинка',
-		    'is_popular' => 'Популярный',
-		    'is_action' => 'Акция',
-	    ];
-    }
+	{
+		return [
+			'is_new' => 'Новинка',
+			'is_popular' => 'Популярный',
+			'is_action' => 'Акция',
+		];
+	}
 }

@@ -7,7 +7,7 @@ class ShopAsset extends AssetBundle
 {
 	public $sourcePath = '@andrewdanilov/shop/backend/web';
 	public $css = [
-		'css/shop.css',
+		'css/shop.css?v=20201115',
 	];
 	public $js = [
 		'js/shop.js',

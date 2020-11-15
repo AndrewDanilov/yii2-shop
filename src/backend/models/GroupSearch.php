@@ -14,7 +14,7 @@ class GroupSearch extends Group
     {
         return [
             [['id', 'order'], 'integer'],
-            [['name'], 'string'],
+            [['name', 'code'], 'string'],
         ];
     }
 
@@ -49,6 +49,7 @@ class GroupSearch extends Group
 		        'attributes' => [
 			        'id',
 			        'name',
+			        'code',
 			        'order',
 		        ],
 	        ],
@@ -68,7 +69,8 @@ class GroupSearch extends Group
 	        'order' => $this->order,
         ]);
 
-	    $query->andFilterWhere(['like', 'name', $this->name]);
+	    $query->andFilterWhere(['like', 'name', $this->name])
+		    ->andFilterWhere(['like', 'code', $this->code]);
 
         return $dataProvider;
     }

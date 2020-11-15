@@ -90,11 +90,10 @@ Backend menu items:
 $shop_menu_items = [
 	['label' => 'Заказы', 'icon' => 'shopping-bag', 'url' => ['/shop/order']],
 	['label' => 'Товары', 'icon' => 'shopping-cart', 'url' => ['/shop/product']],
-	['label' => 'Категории', 'icon' => 'tags', 'url' => ['/shop/category']],
 	['label' => 'Бренды', 'icon' => 'leaf', 'url' => ['/shop/brand']],
 	['label' => 'Свойства', 'icon' => 'list', 'url' => ['/shop/property']],
 	['label' => 'Опции', 'icon' => 'check-square', 'url' => ['/shop/option']],
-	['label' => 'Группы свойств', 'icon' => 'grip-horizontal', 'url' => ['/shop/group']],
+	['label' => 'Группы свойств', 'icon' => 'tags', 'url' => ['/shop/group']],
 	['label' => 'Связи', 'icon' => 'link', 'url' => ['/shop/relation']],
 	['label' => 'Способы оплаты', 'icon' => 'wallet', 'url' => ['/shop/pay']],
 	['label' => 'Способы доставки', 'icon' => 'truck', 'url' => ['/shop/delivery']],
