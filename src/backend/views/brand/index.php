@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		        'value' => function($model) { return Html::img($model->image, ['width' => '100']); },
 	        ],
 	        'name',
+	        'link',
             'is_favorite:boolean',
             'order',
 

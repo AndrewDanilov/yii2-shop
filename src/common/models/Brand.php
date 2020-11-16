@@ -15,6 +15,7 @@ use yii\helpers\Inflector;
  * @property string $seo_title
  * @property string $seo_description
  * @property string $slug
+ * @property string $link
  * @property Product[] $products
  * @property Category[] $categories
  */
@@ -35,7 +36,7 @@ class Brand extends \yii\db\ActiveRecord
     {
         return [
 	        [['name'], 'required'],
-	        [['name', 'seo_title', 'image', 'slug'], 'string', 'max' => 255],
+	        [['name', 'seo_title', 'image', 'slug', 'link'], 'string', 'max' => 255],
 	        [['description', 'seo_description'], 'string'],
 	        [['order'], 'integer'],
             [['order'], 'default', 'value' => 0],
@@ -58,6 +59,7 @@ class Brand extends \yii\db\ActiveRecord
 	        'seo_title' => 'Seo Title',
 	        'seo_description' => 'Seo Description',
 	        'slug' => 'Seo Url',
+	        'link' => 'Ссылка на сайт',
         ];
     }
 

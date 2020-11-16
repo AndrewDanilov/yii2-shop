@@ -19,6 +19,8 @@ use andrewdanilov\InputImages\InputImages;
 
 	<?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
+	<?= $form->field($model, 'link')->textInput(['maxlength' => true]) ?>
+
 	<?= $form->field($model, 'seo_title')->textInput(['maxlength' => true]) ?>
 
 	<?= $form->field($model, 'seo_description')->textarea(['rows' => 6]) ?>
