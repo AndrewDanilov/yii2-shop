@@ -147,4 +147,9 @@ class Category extends \yii\db\ActiveRecord
 	{
 		return self::find()->select(['name', 'id'])->indexBy('id')->column();
 	}
+
+	public static function getParentCategoriesList()
+	{
+		return self::find()->select(['name', 'id'])->where(['parent_id' => 0])->indexBy('id')->column();
+	}
 }
