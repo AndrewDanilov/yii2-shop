@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
+use andrewdanilov\ckeditor\CKEditor;
+use andrewdanilov\helpers\CKEditorHelper;
 use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\behaviors\LinkedProductsBehavior;
 use andrewdanilov\behaviors\ShopOptionBehavior;
@@ -45,7 +47,9 @@ if ($model->isNewRecord) {
 
 		<?= $form->field($model, 'images')->widget(InputImages::class, ['multiple' => true]) ?>
 
-		<?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+		<?= $form->field($model, 'description')->widget(CKEditor::class, [
+			'editorOptions' => CKEditorHelper::defaultOptions(),
+		]); ?>
 
 		<?= $form->field($model, 'brand_id')->dropDownList(Brand::getBrandsList(), ['prompt' => '']) ?>
 

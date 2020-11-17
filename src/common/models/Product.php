@@ -2,8 +2,10 @@
 namespace andrewdanilov\shop\common\models;
 
 use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use andrewdanilov\behaviors\ShopOptionBehavior;
+use andrewdanilov\behaviors\ValueTypeBehavior;
 
 /**
  * This is the model class for table "shop_product".
@@ -26,6 +28,7 @@ use andrewdanilov\behaviors\ShopOptionBehavior;
  * @property ActiveQuery $tags
  * @property Property[] $availableProperties
  * @property Option[] $availableOptions
+ * @property Category[] $categories
  * @property string $categoriesDelimitedString
  * @property array $availableCategoryProperties
  * @property array $availableCategoryOptions
@@ -169,23 +172,25 @@ class Product extends \yii\db\ActiveRecord
 	//////////////////////////////////////////////////////////////////
 
 	/**
-	 * @return ProductProperties[]
+	 * @return ProductProperties[]|ValueTypeBehavior[]
 	 */
 	public function getProductProperties()
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
+		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
 		return $behavior->getOptionsRef()->all();
 	}
 
 	/**
 	 * @param string $group_code
-	 * @return ProductProperties[]
+	 * @return ProductProperties[]|ValueTypeBehavior[]
 	 */
 	public function getGroupProductProperties($group_code)
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
+		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
 		$productProperties = $behavior->getOptionsRef();
 		$productProperties->innerJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . ProductProperties::tableName() . '.property_id');
 		$productProperties->innerJoin(Group::tableName(), Group::tableName() . '.id = ' . PropertyGroups::tableName() . '.group_id');
@@ -194,12 +199,13 @@ class Product extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @return ProductProperties[]
+	 * @return ProductProperties[]|ValueTypeBehavior[]
 	 */
 	public function getFilteredProductProperties()
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
+		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
 		$productProperties = $behavior->getOptionsRef();
 		$productProperties->where(['is_filtered' => 1]);
 		return $productProperties->all();
@@ -213,6 +219,7 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
+		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
 		$productOptions = $behavior->getOptionsRef();
 		if ($productOptionsIds !== null) {
 			if (!is_array($productOptionsIds)) {
@@ -230,6 +237,7 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
+		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
 		$productOptions = $behavior->getOptionsRef();
 		$productOptions->where(['is_filtered' => 1]);
 		return $productOptions->all();
@@ -242,6 +250,7 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
+		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
 		return $behavior->getOptionsRef()->orderBy(ProductOptions::tableName() . '.id')->groupBy('option_id')->all();
 	}
 
@@ -263,6 +272,17 @@ class Product extends \yii\db\ActiveRecord
 
 	//////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return ActiveQuery
+	 */
+	public function getCategories()
+	{
+		return $this->getTag();
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getCategoriesDelimitedString()
 	{
 		$allCategories = Category::getCategoriesList();
@@ -271,6 +291,9 @@ class Product extends \yii\db\ActiveRecord
 		return implode(', ', $categories);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getMarksDelimitedString()
 	{
 		$allMarks = static::getMarksList();
@@ -285,6 +308,9 @@ class Product extends \yii\db\ActiveRecord
 
 	//////////////////////////////////////////////////////////////////
 
+	/**
+	 * @return string[]
+	 */
 	public static function getMarksList()
 	{
 		return [

@@ -39,7 +39,7 @@ class ProductProperties extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['property_id', 'product_id', 'value'], 'required'],
+			[['property_id', 'product_id'], 'required'],
 			[['property_id', 'product_id'], 'integer'],
 			[['value'], 'safe'],
 			[['property_id', 'product_id'], 'unique', 'targetAttribute' => ['property_id', 'product_id']],

@@ -1,10 +1,10 @@
 <?php
 namespace andrewdanilov\shop\backend\controllers;
 
-use andrewdanilov\behaviors\TagBehavior;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\BadRequestHttpException;
+use andrewdanilov\behaviors\TagBehavior;
 use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\common\models\Product;
 use andrewdanilov\shop\common\models\Category;
