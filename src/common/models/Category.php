@@ -1,6 +1,7 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use yii\db\Query;
 use yii\helpers\Inflector;
 use andrewdanilov\helpers\NestedCategoryHelper;
 
@@ -27,59 +28,59 @@ use andrewdanilov\helpers\NestedCategoryHelper;
 class Category extends \yii\db\ActiveRecord
 {
 	/**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'shop_category';
-    }
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return 'shop_category';
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-	        [['name'], 'required'],
-            [['order', 'parent_id'], 'integer'],
-            [['parent_id'], 'validateParent'],
-            [['name', 'seo_title', 'image', 'slug'], 'string', 'max' => 255],
-	        [['description', 'seo_description'], 'string'],
-            [['order', 'parent_id'], 'default', 'value' => 0],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return [
+			[['name'], 'required'],
+			[['order', 'parent_id'], 'integer'],
+			[['parent_id'], 'validateParent'],
+			[['name', 'seo_title', 'image', 'slug'], 'string', 'max' => 255],
+			[['description', 'seo_description'], 'string'],
+			[['order', 'parent_id'], 'default', 'value' => 0],
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'parent_id' => 'Родительская категория',
-            'image' => 'Обложка',
-            'order' => 'Порядок',
-            'name' => 'Название',
-	        'description' => 'Описание',
-	        'seo_title' => 'Seo Title',
-	        'seo_description' => 'Seo Description',
-	        'slug' => 'Seo Url',
-        ];
-    }
-    
-    public function validateParent($attribute, $params, $validator)
-    {
-    	if ($this->$attribute == $this->id) {
-    		$this->addError($attribute, 'Категория не может быть вложена сама в себя');
-	    }
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => 'ID',
+			'parent_id' => 'Родительская категория',
+			'image' => 'Обложка',
+			'order' => 'Порядок',
+			'name' => 'Название',
+			'description' => 'Описание',
+			'seo_title' => 'Seo Title',
+			'seo_description' => 'Seo Description',
+			'slug' => 'Seo Url',
+		];
+	}
+
+	public function validateParent($attribute, $params, $validator)
+	{
+		if ($this->$attribute == $this->id) {
+			$this->addError($attribute, 'Категория не может быть вложена сама в себя');
+		}
+	}
 
 	//////////////////////////////////////////////////////////////////
 
-    public function getChildren()
-    {
-    	return $this->hasMany(Category::class, ['parent_id' => 'id']);
-    }
+	public function getChildren()
+	{
+		return $this->hasMany(Category::class, ['parent_id' => 'id']);
+	}
 
 	/**
 	 * Products from a category
@@ -151,5 +152,55 @@ class Category extends \yii\db\ActiveRecord
 	public static function getParentCategoriesList()
 	{
 		return self::find()->select(['name', 'id'])->where(['parent_id' => 0])->indexBy('id')->column();
+	}
+
+	/**
+	 * Возвращает все возможные значения всех свойств товаров указанной категории.
+	 * Возвращаются только свойства имеющие признак is_filtered.
+	 * Результат в виде массива:
+	 * [
+	 *   '1' => [
+	 *     'name' => 'Property 1 Name',
+	 *     'values' => ['value 1', 'value 2'],
+	 *   ]
+	 *   '2' => [
+	 *     'name' => 'Property 2 Name',
+	 *     'values' => ['value 1', 'value 2'],
+	 *   ]
+	 * ]
+	 *
+	 * @param int $category_id
+	 * @return array
+	 */
+	public static function getCategoryProductFilteredPropertyValues($category_id=0)
+	{
+		$category_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $category_id);
+		if ($category_id) {
+			array_push($category_ids, $category_id);
+		}
+
+		$category_product_properties = (new Query())
+			->select([
+				ProductProperties::tableName() . '.property_id',
+				ProductProperties::tableName() . '.value',
+				Property::tableName() . '.name',
+			])
+			->from(ProductCategories::tableName())
+			->innerJoin(ProductProperties::tableName(), ProductProperties::tableName() . '.product_id = ' . ProductCategories::tableName() . '.product_id')
+			->innerJoin(Property::tableName(), Property::tableName() . '.id = ' . ProductProperties::tableName() . '.property_id')
+			->andWhere([ProductCategories::tableName() . '.category_id' => $category_ids])
+			->andWhere([Property::tableName() . '.is_filtered' => 1])
+			->groupBy(ProductProperties::tableName() . '.id')
+			->all();
+
+		$filtered_properties = [];
+		foreach ($category_product_properties as $property) {
+			if (!isset($filtered_properties[$property['property_id']])) {
+				$filtered_properties[$property['property_id']]['name'] = $property['name'];
+			}
+			$filtered_properties[$property['property_id']]['values'][md5($property['value'])] = $property['value'];
+		}
+
+		return $filtered_properties;
 	}
 }
