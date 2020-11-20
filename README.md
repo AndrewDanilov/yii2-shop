@@ -84,6 +84,27 @@ $config = [
 ];
 ```
 
+To use extension's default url rules, add `UrlRule` class to `urlManager` `rules` section of frontend main config:
+
+```php
+$config = [
+	// ...
+	'components' => [
+		// ...
+		'urlManager' => [
+			// ...
+			'rules' => [
+				// ...
+				[
+					'class' => 'andrewdanilov\shop\frontend\components\UrlRule',
+				],
+				// ...
+			],
+		],
+	],
+];
+```
+
 Backend menu items:
 
 ```php
