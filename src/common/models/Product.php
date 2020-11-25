@@ -64,6 +64,7 @@ class Product extends \yii\db\ActiveRecord
 				'referenceModelClass' => 'andrewdanilov\shop\common\models\ProductProperties',
 				'referenceModelOptionAttribute' => 'property_id',
 				'optionModelClass' => 'andrewdanilov\shop\common\models\Property',
+				'optionModelOrderAttribute' => 'order',
 				'createDefaultValues' => true,
 			],
 			'options' => [
@@ -71,6 +72,7 @@ class Product extends \yii\db\ActiveRecord
 				'referenceModelClass' => 'andrewdanilov\shop\common\models\ProductOptions',
 				'referenceModelOptionAttribute' => 'option_id',
 				'optionModelClass' => 'andrewdanilov\shop\common\models\Option',
+				'optionModelOrderAttribute' => 'order',
 			],
 			[
 				'class' => 'andrewdanilov\behaviors\LinkedProductsBehavior',
@@ -179,7 +181,8 @@ class Product extends \yii\db\ActiveRecord
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
 		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
-		return $behavior->getOptionsRef()->all();
+		$productProperties = $behavior->getOptionsRef();
+		return $productProperties->all();
 	}
 
 	/**
@@ -207,7 +210,7 @@ class Product extends \yii\db\ActiveRecord
 		$behavior = $this->getBehavior('properties');
 		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
 		$productProperties = $behavior->getOptionsRef();
-		$productProperties->where(['is_filtered' => 1]);
+		$productProperties->andWhere(['is_filtered' => 1]);
 		return $productProperties->all();
 	}
 
@@ -251,7 +254,7 @@ class Product extends \yii\db\ActiveRecord
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
 		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
-		return $behavior->getOptionsRef()->orderBy(ProductOptions::tableName() . '.id')->groupBy('option_id')->all();
+		return $behavior->getOptionsRef()->groupBy('option_id')->all();
 	}
 
 	//////////////////////////////////////////////////////////////////
