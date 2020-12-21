@@ -15,7 +15,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
 			return 'catalog';
 		} elseif ($route === 'catalog/category') {
 			if (!empty($params['id'])) {
-				$path = NestedCategoryHelper::getCategoryPath(Category::find(), $params['id'], 'slug');
+				$path = NestedCategoryHelper::getCategoryPathDelimitedStr(Category::find(), $params['id'], '/', 'slug');
 				if (!empty($path)) {
 					unset($params['id']);
 					$route = 'catalog/' . $path;
