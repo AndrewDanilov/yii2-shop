@@ -191,6 +191,7 @@ class Category extends \yii\db\ActiveRecord
 			->andWhere([ProductCategories::tableName() . '.category_id' => $category_ids])
 			->andWhere([Property::tableName() . '.is_filtered' => 1])
 			->groupBy(ProductProperties::tableName() . '.id')
+			->orderBy([Property::tableName() . '.order' => SORT_ASC])
 			->all();
 
 		$filtered_properties = [];
