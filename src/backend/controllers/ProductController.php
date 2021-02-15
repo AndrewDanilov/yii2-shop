@@ -1,15 +1,20 @@
 <?php
 namespace andrewdanilov\shop\backend\controllers;
 
-use Yii;
-use yii\helpers\ArrayHelper;
-use yii\web\BadRequestHttpException;
+use andrewdanilov\behaviors\ImagesBehavior;
+use andrewdanilov\behaviors\LinkedProductsBehavior;
+use andrewdanilov\behaviors\ShopOptionBehavior;
 use andrewdanilov\behaviors\TagBehavior;
 use andrewdanilov\helpers\NestedCategoryHelper;
-use andrewdanilov\shop\common\models\Product;
-use andrewdanilov\shop\common\models\Category;
 use andrewdanilov\shop\backend\models\ProductSearch;
 use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionHtml;
+use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\common\models\Product;
+use andrewdanilov\shop\common\models\ProductCategories;
+use Yii;
+use yii\db\Query;
+use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 
 class ProductController extends BaseController
 {
@@ -18,7 +23,19 @@ class ProductController extends BaseController
 	 */
 	public function actionIndex()
 	{
-		$tree = NestedCategoryHelper::getPlaneTree(Category::find());
+		$pages_query = (new Query())
+			->select('COUNT(*)')
+			->from(ProductCategories::tableName())
+			->where(ProductCategories::tableName() . '.category_id = ' . Category::tableName() . '.id');
+		$categories_query = Category::find()
+			->select([
+				Category::tableName() . '.id',
+				Category::tableName() . '.parent_id',
+				Category::tableName() . '.name',
+				'count' => $pages_query,
+			])
+			->orderBy(['order' => SORT_ASC]);
+		$tree = NestedCategoryHelper::getPlaneTree($categories_query);
 
 		$searchModel = new ProductSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);

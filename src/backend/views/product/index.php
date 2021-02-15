@@ -32,12 +32,12 @@ if (!empty($productSearch = array_filter(Yii::$app->request->get('ProductSearch'
 
 	<div class="shop-tree-list">
 		<?php foreach ($tree as $item) { ?>
-			<div class="shop-list-item level-<?= $item['level'] ?> <?php if (ArrayHelper::getValue($productSearch, 'category_id') == $item['category']->id) { ?>active-item<?php } ?>">
+			<div class="shop-list-item level-<?= $item['level'] ?> <?php if (ArrayHelper::getValue($productSearch, 'category_id') == $item['category']['id']) { ?>active-item<?php } ?>">
 				<div class="shop-tree-actions">
-					<?= Html::a('<span class="fa fa-pen"></span>', ['product/update-category', 'id' => $item['category']->id]) ?>
-					<?= Html::a('<span class="fa fa-trash"></span>', ['product/delete-category', 'id' => $item['category']->id], ['data' => ['confirm' => 'Вы уверены, что хотите удалить эту категорию?', 'method' => 'post']]) ?>
+					<?= Html::a('<span class="fa fa-pen"></span>', ['product/update-category', 'id' => $item['category']['id']]) ?>
+					<?= Html::a('<span class="fa fa-trash"></span>', ['product/delete-category', 'id' => $item['category']['id']], ['data' => ['confirm' => 'Вы уверены, что хотите удалить эту категорию?', 'method' => 'post']]) ?>
 				</div>
-				<div class="shop-tree-link"><?= Html::a($item['category']->name . ' (' . $item['category']->getProducts()->count() . ')', ['product/index', 'ProductSearch' => ['category_id' => $item['category']->id]]) ?></div>
+				<div class="shop-tree-link"><?= Html::a($item['category']['name'] . ' (' . $item['category']['count'] . ')', ['product/index', 'ProductSearch' => ['category_id' => $item['category']['id']]]) ?></div>
 			</div>
 		<?php } ?>
 	</div>
