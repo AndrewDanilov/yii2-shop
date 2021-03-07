@@ -24,7 +24,7 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'brand_id', 'category_id', 'is_new', 'is_popular', 'is_action', 'discount'], 'integer'],
+            [['id', 'brand_id', 'category_id', 'is_new', 'is_popular', 'is_action', 'discount', 'order'], 'integer'],
             [['price'], 'number'],
 	        [['name', 'article'], 'string'],
 	        [['marks'], 'validateMarks'],
@@ -72,6 +72,7 @@ class ProductSearch extends Product
 			        'name',
 			        'price',
 			        'discount',
+			        'order',
 		        ],
 	        ],
         ]);
@@ -93,6 +94,7 @@ class ProductSearch extends Product
 	        Product::tableName() . '.is_new' => $this->is_new,
 	        Product::tableName() . '.is_popular' => $this->is_popular,
 	        Product::tableName() . '.is_action' => $this->is_action,
+	        Product::tableName() . '.order' => $this->order,
 	        ProductCategories::tableName() . '.category_id' => $this->category_id,
         ]);
 
