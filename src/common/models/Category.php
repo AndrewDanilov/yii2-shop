@@ -146,12 +146,12 @@ class Category extends \yii\db\ActiveRecord
 
 	public static function getCategoriesList()
 	{
-		return self::find()->select(['name', 'id'])->indexBy('id')->column();
+		return self::find()->select(['name', 'id'])->orderBy('order')->indexBy('id')->column();
 	}
 
 	public static function getParentCategoriesList()
 	{
-		return self::find()->select(['name', 'id'])->where(['parent_id' => 0])->indexBy('id')->column();
+		return self::find()->select(['name', 'id'])->where(['parent_id' => 0])->orderBy('order')->indexBy('id')->column();
 	}
 
 	/**

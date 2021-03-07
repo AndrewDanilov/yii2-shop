@@ -23,6 +23,7 @@ use andrewdanilov\behaviors\ValueTypeBehavior;
  * @property string $seo_title
  * @property string $seo_description
  * @property string $slug
+ * @property integer $order
  * @property Brand $brand
  * @property Order[] $orders
  * @property ActiveQuery $tags
@@ -104,6 +105,8 @@ class Product extends \yii\db\ActiveRecord
 			[['price'], 'number'],
 			[['price', 'discount', 'is_new', 'is_popular', 'is_action'], 'default', 'value' => 0],
 			[['description', 'seo_description'], 'string'],
+			[['order'], 'integer'],
+			[['order'], 'default', 'value' => 500],
 		];
 	}
 
@@ -130,6 +133,7 @@ class Product extends \yii\db\ActiveRecord
 			'seo_description' => 'Seo Description',
 			'slug' => 'Seo Url',
 			'marks' => 'Метки',
+			'order' => 'Порядок',
 		];
 	}
 

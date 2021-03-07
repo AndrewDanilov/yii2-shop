@@ -73,7 +73,7 @@ if (!empty($productSearch = array_filter(Yii::$app->request->get('ProductSearch'
 			[
 				'attribute' => 'category_id',
 				'value' => 'categoriesDelimitedString',
-				'filter' => NestedCategoryHelper::getDropdownTree(Category::find()),
+				'filter' => NestedCategoryHelper::getDropdownTree(Category::find()->orderBy('order')),
 				'filterOptions' => ['style' => 'font-family:monospace;'],
 			],
 			[
@@ -81,6 +81,7 @@ if (!empty($productSearch = array_filter(Yii::$app->request->get('ProductSearch'
 				'value' => 'marksDelimitedString',
 				'filter' => Product::getMarksList(),
 			],
+			'order',
 
 			[
 				'class' => 'andrewdanilov\gridtools\FontawesomeActionColumn',
