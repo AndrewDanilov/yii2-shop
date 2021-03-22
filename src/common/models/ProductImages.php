@@ -28,7 +28,7 @@ class ProductImages extends \yii\db\ActiveRecord
         return [
 	        [['product_id', 'image'], 'required'],
 	        [['product_id', 'order'], 'integer'],
-	        [['image'], 'string', 'max' => 255],
+	        [['image'], 'string'],
 	        [['order'], 'default', 'value' => 0],
         ];
     }

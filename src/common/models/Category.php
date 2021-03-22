@@ -138,6 +138,9 @@ class Category extends \yii\db\ActiveRecord
 	{
 		if (empty($this->slug)) {
 			$this->slug = Inflector::slug($this->name);
+			if (empty($this->slug)) {
+				$this->slug = 'category-' . $this->id;
+			}
 		}
 		return parent::beforeSave($insert);
 	}

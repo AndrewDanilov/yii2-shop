@@ -171,6 +171,9 @@ class Product extends \yii\db\ActiveRecord
 	{
 		if (empty($this->slug)) {
 			$this->slug = Inflector::slug($this->name);
+			if (empty($this->slug)) {
+				$this->slug = 'product-' . $this->id;
+			}
 		}
 		return parent::beforeSave($insert);
 	}

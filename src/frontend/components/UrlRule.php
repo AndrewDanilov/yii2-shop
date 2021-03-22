@@ -30,6 +30,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
 				/* @var $product Product */
 				$product = Product::find()->where(['id' => $params['id']])->one();
 				if (!empty($product)) {
+					unset($params['id']);
 					$route = 'catalog/' . $product->slug;
 					if (!empty($params) && ($query = http_build_query($params)) !== '') {
 						$route .= '?' . $query;
