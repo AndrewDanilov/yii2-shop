@@ -175,14 +175,14 @@ class Category extends \yii\db\ActiveRecord
 	 * @param int $category_id
 	 * @return array
 	 */
-	public static function getCategoryProductFilteredPropertyValues($category_id=0)
+	public static function getCategoryProductFilteredPropertyValues($category_id=0, $hide_empty=false, $sort_by_value=false)
 	{
 		$category_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $category_id);
 		if ($category_id) {
 			array_push($category_ids, $category_id);
 		}
 
-		$category_product_properties = (new Query())
+		$category_product_properties_query = (new Query())
 			->select([
 				ProductProperties::tableName() . '.property_id',
 				ProductProperties::tableName() . '.value',
@@ -194,8 +194,15 @@ class Category extends \yii\db\ActiveRecord
 			->andWhere([ProductCategories::tableName() . '.category_id' => $category_ids])
 			->andWhere([Property::tableName() . '.is_filtered' => 1])
 			->groupBy(ProductProperties::tableName() . '.id')
-			->orderBy([Property::tableName() . '.order' => SORT_ASC])
-			->all();
+			->orderBy([Property::tableName() . '.order' => SORT_ASC]);
+		if ($hide_empty) {
+			$category_product_properties_query->andWhere(['not', [ProductProperties::tableName() . '.value' => '']]);
+		}
+		if ($sort_by_value) {
+			$category_product_properties_query->addOrderBy([ProductProperties::tableName() . '.value' => SORT_ASC]);
+		}
+
+		$category_product_properties = $category_product_properties_query->all();
 
 		$filtered_properties = [];
 		foreach ($category_product_properties as $property) {
