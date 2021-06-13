@@ -13,10 +13,12 @@ use andrewdanilov\helpers\NestedCategoryHelper;
  * @property string $image
  * @property int $order
  * @property string $name
+ * @property string $short_description
  * @property string $description
  * @property string $seo_title
  * @property string $seo_description
  * @property string $slug
+ * @property string $meta_data // todo: use for custom category fields
  * @property Category[] $children
  * @property Product[] $products
  * @property ProductCategories[] $allChildrenProductCategories
@@ -45,7 +47,7 @@ class Category extends \yii\db\ActiveRecord
 			[['order', 'parent_id'], 'integer'],
 			[['parent_id'], 'validateParent'],
 			[['name', 'seo_title', 'image', 'slug'], 'string', 'max' => 255],
-			[['description', 'seo_description'], 'string'],
+			[['short_description', 'description', 'seo_description', 'meta_data'], 'string'],
 			[['order', 'parent_id'], 'default', 'value' => 0],
 		];
 	}
@@ -61,7 +63,8 @@ class Category extends \yii\db\ActiveRecord
 			'image' => 'Обложка',
 			'order' => 'Порядок',
 			'name' => 'Название',
-			'description' => 'Описание',
+			'short_description' => 'Краткое описание',
+			'description' => 'Подробное описание',
 			'seo_title' => 'Seo Title',
 			'seo_description' => 'Seo Description',
 			'slug' => 'Seo Url',

@@ -1,10 +1,12 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use andrewdanilov\ckeditor\CKEditor;
+use andrewdanilov\helpers\CKEditorHelper;
 use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\InputImages\InputImages;
 use andrewdanilov\shop\common\models\Category;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model Category */
@@ -31,7 +33,13 @@ if ($model->isNewRecord) {
 
 		<?= $form->field($model, 'image')->widget(InputImages::class) ?>
 
-		<?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+		<?= $form->field($model, 'short_description')->widget(CKEditor::class, [
+			'editorOptions' => CKEditorHelper::defaultOptions(200),
+		]) ?>
+
+		<?= $form->field($model, 'description')->widget(CKEditor::class, [
+			'editorOptions' => CKEditorHelper::defaultOptions(400),
+		]) ?>
 
 		<?= $form->field($model, 'seo_title')->textInput(['maxlength' => true]) ?>
 
