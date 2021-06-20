@@ -1,6 +1,9 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+use yii\helpers\Html;
+
 /**
  * This is the model class for table "shop_product_relations".
  *
@@ -37,10 +40,10 @@ class ProductRelations extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'relation_id' => 'Relation ID',
-            'product_id' => 'Product ID',
-            'linked_product_id' => 'Linked Product ID',
+            'id' => Yii::t('shop/common', 'ID'),
+            'relation_id' => Yii::t('shop/common', 'Relation ID'),
+            'product_id' => Yii::t('shop/common', 'Product ID'),
+            'linked_product_id' => Yii::t('shop/common', 'Linked Product ID'),
         ];
     }
 

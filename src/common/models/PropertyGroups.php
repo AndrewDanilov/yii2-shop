@@ -1,6 +1,7 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 class PropertyGroups extends ActiveRecord
@@ -21,8 +22,9 @@ class PropertyGroups extends ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'group_id' => 'Группа',
-			'property_id' => 'Свойство',
+			'id' => Yii::t('shop/common', 'ID'),
+			'group_id' => Yii::t('shop/common', 'Group'),
+			'property_id' => Yii::t('shop/common', 'Property'),
 		];
 	}
 }

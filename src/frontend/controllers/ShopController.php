@@ -1,5 +1,5 @@
 <?php
-namespace andrewdanilov\frontend\controllers;
+namespace andrewdanilov\shop\frontend\controllers;
 
 use Yii;
 use yii\web\Controller;
@@ -13,12 +13,13 @@ use andrewdanilov\shop\common\models\Option;
 use andrewdanilov\shop\common\models\Product;
 use andrewdanilov\shop\frontend\models\OrderForm;
 
+// todo
 class ShopController extends Controller
 {
 	/**
 	 * Index action.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function actionIndex()
 	{
@@ -33,7 +34,7 @@ class ShopController extends Controller
 	 * @param null $brandId
 	 * @param int $offset
 	 * @param string $query
-	 * @return mixed
+	 * @return string
 	 */
 	public function actionCatalog($categoryId=null, $brandId=null, $offset=0, $query='')
 	{
@@ -71,7 +72,7 @@ class ShopController extends Controller
 	 * Product action.
 	 *
 	 * @param int $id
-	 * @return mixed
+	 * @return string
 	 */
 	public function actionProduct($id)
 	{
@@ -100,7 +101,7 @@ class ShopController extends Controller
 	 * Brand action.
 	 *
 	 * @param int $id
-	 * @return mixed
+	 * @return string
 	 */
 	public function actionBrand($id)
 	{
@@ -114,7 +115,7 @@ class ShopController extends Controller
 	/**
 	 * Brands action.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function actionBrands()
 	{
@@ -127,7 +128,7 @@ class ShopController extends Controller
 	/**
 	 * Order action.
 	 *
-	 * @return mixed
+	 * @return string|\yii\web\Response
 	 */
 	public function actionOrder()
 	{

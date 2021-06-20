@@ -2,6 +2,7 @@
 namespace andrewdanilov\shop\common\models;
 
 use andrewdanilov\behaviors\TagBehavior;
+use Yii;
 
 /**
  * This is the model class for table "shop_option".
@@ -12,9 +13,12 @@ use andrewdanilov\behaviors\TagBehavior;
  * @property bool $is_filtered
  * @property Product[] $products
  * @property Category[] $categories
+ * @property integer[] $category_ids
  */
 class Option extends \yii\db\ActiveRecord
 {
+	public $category_ids;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -27,6 +31,7 @@ class Option extends \yii\db\ActiveRecord
 				'referenceModelAttribute' => 'option_id',
 				'referenceModelTagAttribute' => 'category_id',
 				'tagModelClass' => Category::class,
+				'ownerModelIdsAttribute' => 'category_ids',
 			],
 		];
 	}
@@ -58,12 +63,11 @@ class Option extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order' => 'Порядок',
-	        'name' => 'Название',
-	        'categoryIds' => 'Категории',
-	        'category_id' => 'Категории',
-	        'is_filtered' => 'Использовать в фильтре',
+            'id' => Yii::t('shop/common', 'ID'),
+            'order' => Yii::t('shop/common', 'Order'),
+	        'name' => Yii::t('shop/common', 'Name'),
+	        'category_ids' => Yii::t('shop/common', 'Categories'),
+	        'is_filtered' => Yii::t('shop/common', 'Use in filter')
         ];
     }
 
@@ -76,29 +80,9 @@ class Option extends \yii\db\ActiveRecord
 	{
 		$behavior = $this->getBehavior('category');
 		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTag();
+			return $behavior->getTags();
 		}
 		return null;
-	}
-
-	//////////////////////////////////////////////////////////////////
-
-	public function getCategoryIds()
-	{
-		$behavior = $this->getBehavior('category');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTagIds();
-		}
-		return [];
-	}
-
-	public function setCategoryIds($ids)
-	{
-		$behavior = $this->getBehavior('category');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->setTagIds($ids);
-		}
-		return [];
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -114,8 +98,7 @@ class Option extends \yii\db\ActiveRecord
 	public function categoriesDelimitedString()
 	{
 		$allCategories = Category::getCategoriesList();
-		$categories = $this->getCategoryIds();
-		$categories = array_intersect_key($allCategories, array_flip($categories));
+		$categories = array_intersect_key($allCategories, array_flip($this->category_ids));
 		return implode(', ', $categories);
 	}
 }

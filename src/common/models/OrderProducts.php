@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_order_products".
  *
@@ -46,16 +48,16 @@ class OrderProducts extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order_id' => '№ заказа',
-            'product_id' => 'ID Товара',
-            'product_option_id' => 'ID Опции',
-            'name' => 'Название',
-            'price' => 'Цена',
-            'count' => 'Количество',
-            'image' => 'Изображение',
-            'option' => 'Опции',
-            'summ' => 'Сумма',
+            'id' => Yii::t('shop/common', 'ID'),
+            'order_id' => Yii::t('shop/common', 'Order num'),
+            'product_id' => Yii::t('shop/common', 'Product ID'),
+            'product_option_id' => Yii::t('shop/common', 'Option ID'),
+            'name' => Yii::t('shop/common', 'Name'),
+            'price' => Yii::t('shop/common', 'Price'),
+            'count' => Yii::t('shop/common', 'Count'),
+            'image' => Yii::t('shop/common', 'Image'),
+            'option' => Yii::t('shop/common', 'Options'),
+            'summ' => Yii::t('shop/common', 'Sum'),
         ];
     }
 

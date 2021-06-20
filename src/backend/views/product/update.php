@@ -1,37 +1,38 @@
 <?php
 
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use yii\bootstrap\ActiveForm;
-use kartik\select2\Select2;
-use andrewdanilov\ckeditor\CKEditor;
-use andrewdanilov\helpers\CKEditorHelper;
-use andrewdanilov\helpers\NestedCategoryHelper;
+use andrewdanilov\behaviors\ImagesBehavior;
 use andrewdanilov\behaviors\LinkedProductsBehavior;
 use andrewdanilov\behaviors\ShopOptionBehavior;
 use andrewdanilov\behaviors\ValueTypeBehavior;
-use andrewdanilov\behaviors\ImagesBehavior;
+use andrewdanilov\ckeditor\CKEditor;
+use andrewdanilov\shop\common\models\Sticker;
+use andrewdanilov\helpers\CKEditorHelper;
+use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\InputImages\InputImages;
-use andrewdanilov\shop\common\models\Product;
-use andrewdanilov\shop\common\models\Category;
-use andrewdanilov\shop\common\models\Brand;
-use andrewdanilov\shop\common\models\ProductProperties;
-use andrewdanilov\shop\common\models\ProductOptions;
-use andrewdanilov\shop\common\models\Property;
-use andrewdanilov\shop\common\models\Option;
-use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionsInit;
 use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionHtml;
+use andrewdanilov\shop\backend\widgets\ProductOptions\ProductOptionsInit;
+use andrewdanilov\shop\common\models\Brand;
+use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\common\models\Option;
+use andrewdanilov\shop\common\models\Product;
+use andrewdanilov\shop\common\models\ProductOptions;
+use andrewdanilov\shop\common\models\ProductProperties;
+use andrewdanilov\shop\common\models\Property;
+use kartik\select2\Select2;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model Product|ImagesBehavior|ShopOptionBehavior|LinkedProductsBehavior */
 
 if ($model->isNewRecord) {
 	$this->title = 'Новый товар';
-	$this->params['breadcrumbs'][] = ['label' => 'Товары', 'url' => ['index']];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('shop/backend', 'Products'), 'url' => ['index']];
 	$this->params['breadcrumbs'][] = $this->title;
 } else {
 	$this->title = 'Изменить товар: ' . $model->name;
-	$this->params['breadcrumbs'][] = ['label' => 'Shop Products', 'url' => ['index']];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('shop/backend', 'Products'), 'url' => ['index']];
 	$this->params['breadcrumbs'][] = $model->name;
 }
 ?>
@@ -45,6 +46,8 @@ if ($model->isNewRecord) {
 
 		<?= $form->field($model, 'article')->textInput(['maxlength' => true]) ?>
 
+		<?= $form->field($model, 'is_stock')->checkbox() ?>
+
 		<?= $form->field($model, 'images')->widget(InputImages::class, ['multiple' => true]) ?>
 
 		<?= $form->field($model, 'description')->widget(CKEditor::class, [
@@ -53,17 +56,13 @@ if ($model->isNewRecord) {
 
 		<?= $form->field($model, 'brand_id')->dropDownList(Brand::getBrandsList(), ['prompt' => '']) ?>
 
-		<?= $form->field($model, 'tagIds')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
+		<?= $form->field($model, 'category_ids')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
 		<?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 
 		<?= $form->field($model, 'discount')->textInput(['type' => 'number']) ?>
 
-		<?= $form->field($model, 'is_new')->checkbox() ?>
-
-		<?= $form->field($model, 'is_popular')->checkbox() ?>
-
-		<?= $form->field($model, 'is_action')->checkbox() ?>
+		<?= $form->field($model, 'sticker_ids')->checkboxList(Sticker::getStickersList()) ?>
 
 		<?php /* @var ShopOptionBehavior $options */ ?>
 		<?php $options = $model->getBehavior('properties') ?>
@@ -98,7 +97,7 @@ if ($model->isNewRecord) {
 						]) ?>
 					<?php } ?>
 				</div>
-				<div class="option-group-add btn btn-info">Добавить опцию</div>
+				<div class="option-group-add btn btn-info"><?= Yii::t('shop/backend', 'Add option') ?></div>
 			</div>
 		<?php } ?>
 
@@ -107,7 +106,7 @@ if ($model->isNewRecord) {
 				'data' => ArrayHelper::map(Product::find()->where(['not', ['id' => $model->id]])->all(), 'id', 'name'),
 				'language' => Yii::$app->language,
 				'options' => [
-					'placeholder' => Yii::t('site', 'Введите название товара...'),
+					'placeholder' => Yii::t('shop/backend', 'Enter product name...'),
 					'multiple' => true,
 				],
 				'pluginOptions' => [
@@ -126,7 +125,7 @@ if ($model->isNewRecord) {
 		<?= $form->field($model, 'order')->textInput(['maxlength' => true]) ?>
 
 		<div class="form-group">
-			<?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+			<?= Html::submitButton(Yii::t('shop/backend', 'Save'), ['class' => 'btn btn-success']) ?>
 		</div>
 
 		<?php ActiveForm::end(); ?>

@@ -9,24 +9,17 @@ use andrewdanilov\shop\common\models\PropertyGroups;
 
 /**
  * Class PropertySearch
- *
- * @package andrewdanilov\shop\backend\models
- * @property int $category_id
- * @property int $group_id
  */
 class PropertySearch extends Property
 {
-	public $category_id;
-	public $group_id;
-
 	/**
 	 * @inheritdoc
 	 */
 	public function rules()
 	{
 		return [
-			[['id', 'order', 'category_id', 'group_id', 'is_filtered'], 'integer'],
-			[['type', 'name'], 'string'],
+			[['id', 'order', 'category_ids', 'group_ids', 'is_filtered'], 'integer'],
+			[['type', 'name', 'filter_type', 'unit'], 'string'],
 		];
 	}
 
@@ -65,6 +58,8 @@ class PropertySearch extends Property
 					'type',
 					'is_filtered',
 					'order',
+					'filter_type',
+					'unit',
 				],
 			],
 		]);
@@ -83,11 +78,13 @@ class PropertySearch extends Property
 			Property::tableName() . '.order' => $this->order,
 			Property::tableName() . '.type' => $this->type,
 			Property::tableName() . '.is_filtered' => $this->is_filtered,
-			CategoryProperties::tableName() . '.category_id' => $this->category_id,
-			PropertyGroups::tableName() . '.group_id' => $this->group_id,
+			Property::tableName() . '.filter_type' => $this->filter_type,
+			CategoryProperties::tableName() . '.category_id' => $this->category_ids,
+			PropertyGroups::tableName() . '.group_id' => $this->group_ids,
 		]);
 
-		$query->andFilterWhere(['like', Property::tableName() . '.name', $this->name]);
+		$query->andFilterWhere(['like', Property::tableName() . '.name', $this->name])
+			->andFilterWhere(['like', Property::tableName() . '.unit', $this->unit]);
 
 		return $dataProvider;
 	}

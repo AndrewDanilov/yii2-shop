@@ -1,10 +1,9 @@
 <?php
 
-use andrewdanilov\shop\common\models\Group;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
 use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\common\models\Category;
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model andrewdanilov\shop\common\models\Option */
@@ -17,10 +16,9 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-	<?= $form->field($model, 'categoryIds')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
-
-	<label class="control-label">Дополнительно</label>
 	<?= $form->field($model, 'is_filtered')->checkbox() ?>
+
+	<?= $form->field($model, 'category_ids')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
 	<?= $form->field($model, 'order')->textInput() ?>
 

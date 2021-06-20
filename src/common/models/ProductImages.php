@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_brand".
  *
@@ -39,9 +41,9 @@ class ProductImages extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'product_id' => 'Товар',
-            'image' => 'Изображение',
+            'id' => Yii::t('shop/common', 'ID'),
+            'product_id' => Yii::t('shop/common', 'Product'),
+            'image' => Yii::t('shop/common', 'Image'),
         ];
     }
 

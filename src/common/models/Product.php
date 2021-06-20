@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use andrewdanilov\behaviors\TagBehavior;
+use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -15,21 +17,22 @@ use andrewdanilov\behaviors\ValueTypeBehavior;
  * @property int $brand_id
  * @property float $price
  * @property integer $discount
- * @property bool $is_new
- * @property bool $is_popular
- * @property bool $is_action
  * @property string $name
  * @property string $description
  * @property string $seo_title
  * @property string $seo_description
  * @property string $slug
  * @property integer $order
+ * @property integer $is_stock
+ * @property string $meta_data // todo: use for custom category fields
  * @property Brand $brand
  * @property Order[] $orders
- * @property ActiveQuery $tags
  * @property Property[] $availableProperties
  * @property Option[] $availableOptions
+ * @property integer[] $category_ids
  * @property Category[] $categories
+ * @property integer[] $sticker_ids
+ * @property Sticker[] $stickers
  * @property string $categoriesDelimitedString
  * @property array $availableCategoryProperties
  * @property array $availableCategoryOptions
@@ -38,10 +41,12 @@ use andrewdanilov\behaviors\ValueTypeBehavior;
  * @property ProductOptions[] $productOptions
  * @property ProductOptions[] $defaultProductOptions
  * @property string|float|int $priceWithMargin
- * @method ActiveQuery getTag()
  */
 class Product extends \yii\db\ActiveRecord
 {
+	public $category_ids;
+	public $sticker_ids;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -53,12 +58,21 @@ class Product extends \yii\db\ActiveRecord
 				'imagesModelClass' => 'andrewdanilov\shop\common\models\ProductImages',
 				'imagesModelRefAttribute' => 'product_id',
 			],
-			[
+			'categories' => [
 				'class' => 'andrewdanilov\behaviors\TagBehavior',
 				'referenceModelClass' => 'andrewdanilov\shop\common\models\ProductCategories',
 				'referenceModelAttribute' => 'product_id',
 				'referenceModelTagAttribute' => 'category_id',
 				'tagModelClass' => 'andrewdanilov\shop\common\models\Category',
+				'ownerModelIdsAttribute' => 'category_ids',
+			],
+			'stickers' => [
+				'class' => 'andrewdanilov\behaviors\TagBehavior',
+				'referenceModelClass' => 'andrewdanilov\shop\common\models\ProductStickers',
+				'referenceModelAttribute' => 'product_id',
+				'referenceModelTagAttribute' => 'sticker_id',
+				'tagModelClass' => 'andrewdanilov\shop\common\models\Sticker',
+				'ownerModelIdsAttribute' => 'sticker_ids',
 			],
 			'properties' => [
 				'class' => 'andrewdanilov\behaviors\ShopOptionBehavior',
@@ -100,13 +114,13 @@ class Product extends \yii\db\ActiveRecord
 		return [
 			[['name'], 'required'],
 			[['brand_id', 'discount'], 'integer'],
-			[['is_new', 'is_popular', 'is_action'], 'boolean'],
 			[['article', 'name', 'seo_title', 'slug'], 'string', 'max' => 255],
 			[['price'], 'number'],
-			[['price', 'discount', 'is_new', 'is_popular', 'is_action'], 'default', 'value' => 0],
-			[['description', 'seo_description'], 'string'],
+			[['price', 'discount'], 'default', 'value' => 0],
+			[['description', 'seo_description', 'meta_data'], 'string'],
 			[['order'], 'integer'],
 			[['order'], 'default', 'value' => 500],
+			[['is_stock'], 'default', 'value' => 1],
 		];
 	}
 
@@ -116,24 +130,25 @@ class Product extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id' => 'ID',
-			'article' => 'Артикул',
-			'image' => 'Изображение',
-			'brand_id' => 'Бренд',
-			'price' => 'Цена',
-			'discount' => 'Скидка',
-			'category_id' => 'Категории',
-			'tagIds' => 'Категории',
-			'name' => 'Название',
-			'is_new' => 'Новинка',
-			'is_popular' => 'Популярный',
-			'is_action' => 'Акция',
-			'description' => 'Описание',
-			'seo_title' => 'Seo Title',
-			'seo_description' => 'Seo Description',
-			'slug' => 'Seo Url',
-			'marks' => 'Метки',
-			'order' => 'Порядок',
+			'id' => Yii::t('shop/common', 'ID'),
+			'article' => Yii::t('shop/common', 'SKU'),
+			'image' => Yii::t('shop/common', 'Image'),
+			'brand_id' => Yii::t('shop/common', 'Brand'),
+			'price' => Yii::t('shop/common', 'Price'),
+			'discount' => Yii::t('shop/common', 'Discount'),
+			'category_id' => Yii::t('shop/common', 'Categories'),
+			'category_ids' => Yii::t('shop/common', 'Categories'),
+			'categories' => Yii::t('shop/common', 'Categories'),
+			'sticker_id' => Yii::t('shop/common', 'Stickers'),
+			'sticker_ids' => Yii::t('shop/common', 'Stickers'),
+			'stickers' => Yii::t('shop/common', 'Stickers'),
+			'name' => Yii::t('shop/common', 'Name'),
+			'description' => Yii::t('shop/common', 'Description'),
+			'seo_title' => Yii::t('shop/common', 'Seo Title'),
+			'seo_description' => Yii::t('shop/common', 'Seo Description'),
+			'slug' => Yii::t('shop/common', 'Seo Url'),
+			'order' => Yii::t('shop/common', 'Order'),
+			'is_stock' => Yii::t('shop/common', 'Available in stock'),
 		];
 	}
 
@@ -172,7 +187,7 @@ class Product extends \yii\db\ActiveRecord
 		if (empty($this->slug)) {
 			$this->slug = Inflector::slug($this->name);
 			if (empty($this->slug)) {
-				$this->slug = 'product-' . $this->id;
+				$this->slug = 'product-' . date('YmdHis');
 			}
 		}
 		return parent::beforeSave($insert);
@@ -196,7 +211,7 @@ class Product extends \yii\db\ActiveRecord
 	 * @param string $group_code
 	 * @return ProductProperties[]|ValueTypeBehavior[]
 	 */
-	public function getGroupProductProperties($group_code)
+	public function getGroupProductProperties($group_code, $show_empty=true)
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
@@ -205,6 +220,9 @@ class Product extends \yii\db\ActiveRecord
 		$productProperties->innerJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . ProductProperties::tableName() . '.property_id');
 		$productProperties->innerJoin(Group::tableName(), Group::tableName() . '.id = ' . PropertyGroups::tableName() . '.group_id');
 		$productProperties->andWhere([Group::tableName() . '.code' => $group_code]);
+		if (!$show_empty) {
+			$productProperties->andWhere(['not', [ProductProperties::tableName() . '.value' => '']]);
+		}
 		return $productProperties->all();
 	}
 
@@ -287,7 +305,23 @@ class Product extends \yii\db\ActiveRecord
 	 */
 	public function getCategories()
 	{
-		return $this->getTag();
+		$behavior = $this->getBehavior('categories');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTags();
+		}
+		return null;
+	}
+
+	/**
+	 * @return ActiveQuery
+	 */
+	public function getStickers()
+	{
+		$behavior = $this->getBehavior('stickers');
+		if ($behavior instanceof TagBehavior) {
+			return $behavior->getTags();
+		}
+		return null;
 	}
 
 	/**
@@ -296,37 +330,17 @@ class Product extends \yii\db\ActiveRecord
 	public function getCategoriesDelimitedString()
 	{
 		$allCategories = Category::getCategoriesList();
-		$categories = $this->getTag()->select('id')->indexBy('id')->column();
-		$categories = array_intersect_key($allCategories, $categories);
+		$categories = array_intersect_key($allCategories, array_flip($this->category_ids));
 		return implode(', ', $categories);
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getMarksDelimitedString()
+	public function getStickersDelimitedString()
 	{
-		$allMarks = static::getMarksList();
-		$marks = [];
-		foreach ($allMarks as $mark_key => $mark_value) {
-			if ($this->$mark_key) {
-				$marks[] = $mark_value;
-			}
-		}
-		return implode(', ', $marks);
-	}
-
-	//////////////////////////////////////////////////////////////////
-
-	/**
-	 * @return string[]
-	 */
-	public static function getMarksList()
-	{
-		return [
-			'is_new' => 'Новинка',
-			'is_popular' => 'Популярный',
-			'is_action' => 'Акция',
-		];
+		$allStickers = Sticker::getStickersList();
+		$stickers = array_intersect_key($allStickers, array_flip($this->sticker_ids));
+		return implode(', ', $stickers);
 	}
 }

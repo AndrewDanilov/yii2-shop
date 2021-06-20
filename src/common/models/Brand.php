@@ -1,6 +1,7 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
 use yii\helpers\Inflector;
 
 /**
@@ -50,16 +51,16 @@ class Brand extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'image' => 'Логотип',
-            'is_favorite' => 'Избранный',
-            'order' => 'Порядок',
-            'name' => 'Название',
-	        'description' => 'Описание',
-	        'seo_title' => 'Seo Title',
-	        'seo_description' => 'Seo Description',
-	        'slug' => 'Seo Url',
-	        'link' => 'Ссылка на сайт',
+            'id' => Yii::t('shop/common', 'ID'),
+            'image' => Yii::t('shop/common', 'Logo'),
+            'is_favorite' => Yii::t('shop/common', 'Favorite'),
+            'order' => Yii::t('shop/common', 'Order'),
+            'name' => Yii::t('shop/common', 'Name'),
+	        'description' => Yii::t('shop/common', 'Description'),
+	        'seo_title' => Yii::t('shop/common', 'Seo Title'),
+	        'seo_description' => Yii::t('shop/common', 'Seo Description'),
+	        'slug' => Yii::t('shop/common', 'Seo Url'),
+	        'link' => Yii::t('shop/common', 'Link'),
         ];
     }
 
@@ -80,13 +81,12 @@ class Brand extends \yii\db\ActiveRecord
 		if (empty($this->slug)) {
 			$this->slug = Inflector::slug($this->name);
 			if (empty($this->slug)) {
-				$this->slug = 'brand-' . $this->id;
+				$this->slug = 'brand-' . date('YmdHis');
 			}
 		}
 		return parent::beforeSave($insert);
 	}
 
-	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////
 
 	public static function getBrandsList()

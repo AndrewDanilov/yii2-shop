@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_product_options".
  *
@@ -41,11 +43,11 @@ class ProductOptions extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'option_id' => 'Опция',
-            'product_id' => 'Товар',
-            'add_price' => 'Наценка',
-            'value' => 'Значение',
+            'id' => Yii::t('shop/common', 'ID'),
+            'option_id' => Yii::t('shop/common', 'Option'),
+            'product_id' => Yii::t('shop/common', 'Product'),
+            'add_price' => Yii::t('shop/common', 'Add price'),
+            'value' => Yii::t('shop/common', 'Value'),
         ];
     }
 

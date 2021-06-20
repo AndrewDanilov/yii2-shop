@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_relation".
  *
@@ -36,9 +38,9 @@ class Relation extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'key' => 'Ключ',
-            'name' => 'Название',
+            'id' => Yii::t('shop/common', 'ID'),
+            'key' => Yii::t('shop/common', 'Key'),
+            'name' => Yii::t('shop/common', 'Name'),
         ];
     }
 

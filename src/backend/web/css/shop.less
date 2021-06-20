@@ -1,28 +1,55 @@
+.shop-editor-actions {
+	clear: both;
+	margin-bottom: 30px;
+}
+
+.shop-editor-boxes {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-items: flex-start;
+	clear: both;
+	margin-bottom: 30px;
+	&:after {
+		content: '';
+		display: block;
+		clear: both;
+	}
+	.shop-editor-box {
+		float: left;
+		padding: 20px;
+		box-shadow: 2px 2px 8px #ddd;
+		margin: 0 20px 20px 0;
+		border: 1px solid #ddd;
+	}
+}
+
 .shop-tree-list {
-	margin: 30px 0;
 	max-height: 300px;
 	overflow-x: auto;
 	.shop-list-item {
 		overflow: hidden;
 		line-height: 24px;
-		padding-left: 40*12px;
 		border-bottom: 1px solid #efefef;
 		&:hover {
 			background: #f7f7f7;
 		}
-		&.level-0 {padding-left: 0;}
-		&.level-1 {padding-left: 40*1px;}
-		&.level-2 {padding-left: 40*2px;}
-		&.level-3 {padding-left: 40*3px;}
-		&.level-4 {padding-left: 40*4px;}
-		&.level-5 {padding-left: 40*5px;}
-		&.level-6 {padding-left: 40*6px;}
-		&.level-7 {padding-left: 40*7px;}
-		&.level-8 {padding-left: 40*8px;}
-		&.level-9 {padding-left: 40*9px;}
-		&.level-10 {padding-left: 40*10px;}
-		&.level-11 {padding-left: 40*11px;}
+		.shop-tree-link a {padding-left: 40*12px;}
+		&.level-0 .shop-tree-link a {padding-left: 0;}
+		&.level-1 .shop-tree-link a {padding-left: 40*1px;}
+		&.level-2 .shop-tree-link a {padding-left: 40*2px;}
+		&.level-3 .shop-tree-link a {padding-left: 40*3px;}
+		&.level-4 .shop-tree-link a {padding-left: 40*4px;}
+		&.level-5 .shop-tree-link a {padding-left: 40*5px;}
+		&.level-6 .shop-tree-link a {padding-left: 40*6px;}
+		&.level-7 .shop-tree-link a {padding-left: 40*7px;}
+		&.level-8 .shop-tree-link a {padding-left: 40*8px;}
+		&.level-9 .shop-tree-link a {padding-left: 40*9px;}
+		&.level-10 .shop-tree-link a {padding-left: 40*10px;}
+		&.level-11 .shop-tree-link a {padding-left: 40*11px;}
 		.shop-tree-link {
+			white-space: nowrap;
+			padding-right: 120px;
 			a {
 				display: block;
 				padding: 4px 0;
@@ -40,7 +67,7 @@
 			a {
 				display: inline-block;
 				vertical-align: middle;
-				margin-left: 10px;
+				margin-right: 10px;
 			}
 		}
 	}

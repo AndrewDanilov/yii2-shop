@@ -29,6 +29,14 @@ class Module extends \andrewdanilov\shop\Module
 						'name' => 'Brand images',
 						'path' => 'upload/images/brand',
 					],
+					[
+						'name' => 'Sticker images',
+						'path' => 'upload/images/sticker',
+					],
+					[
+						'name' => 'Documents',
+						'path' => 'upload/images/docs',
+					],
 				],
 			];
 		}

@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+use yii\bootstrap\Html;
 use yii\db\Expression;
 use yii\helpers\ArrayHelper;
 use andrewdanilov\behaviors\DateBehavior;
@@ -34,7 +36,7 @@ class Order extends \yii\db\ActiveRecord
 	const ORDER_STATUS_CANCELED = 10;
 
 	/* @var array $_orderProducts */
-	private $_orderProducts = []; // товары для нового создаваемого заказа во внутреннем формате
+	private $_orderProducts = []; // products for new order being created in internal format
 
 	/**
 	 * @inheritdoc
@@ -78,17 +80,17 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Создан',
-            'addressee' => 'Получатель',
-            'addressee_name' => 'Имя получателя',
-            'addressee_email' => 'E-mail получателя',
-            'addressee_phone' => 'Телефон получателя',
-            'address' => 'Адрес доставки',
-            'pay_id' => 'Способ оплаты',
-            'delivery_id' => 'Способ доставки',
-            'status' => 'Статус',
-            'summ' => 'Сумма',
+            'id' => Yii::t('shop/common', 'ID'),
+            'created_at' => Yii::t('shop/common', 'Created at'),
+            'addressee' => Yii::t('shop/common', 'Addressee'),
+            'addressee_name' => Yii::t('shop/common', 'Addressee name'),
+            'addressee_email' => Yii::t('shop/common', 'Addressee e-mail'),
+            'addressee_phone' => Yii::t('shop/common', 'Addressee phone'),
+            'address' => Yii::t('shop/common', 'Address'),
+            'pay_id' => Yii::t('shop/common', 'Payment method'),
+            'delivery_id' => Yii::t('shop/common', 'Delivery method'),
+            'status' => Yii::t('shop/common', 'Status'),
+            'summ' => Yii::t('shop/common', 'Sum'),
         ];
     }
 
@@ -191,7 +193,7 @@ class Order extends \yii\db\ActiveRecord
 	//////////////////////////////////////////////////////////////////
 
 	/**
-	 * Возвращает данные получателя в виде строки
+	 * Returns the addressee data as a string
 	 *
 	 * @return string
 	 */
@@ -205,7 +207,7 @@ class Order extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Возвращает данные адреса в виде строки
+	 * Returns the address data as a string
 	 *
 	 * @return string
 	 */
@@ -214,16 +216,16 @@ class Order extends \yii\db\ActiveRecord
 		return implode(', ', array_filter([
 			ArrayHelper::getValue($this->address, 'postindex'),
 			ArrayHelper::getValue($this->address, 'city'),
-			ArrayHelper::getValue($this->address, 'street') ? 'ул. ' . ArrayHelper::getValue($this->address, 'street') : '',
-			ArrayHelper::getValue($this->address, 'house') ? 'д. ' . ArrayHelper::getValue($this->address, 'house') : '',
-			ArrayHelper::getValue($this->address, 'block') ? 'корп. ' . ArrayHelper::getValue($this->address, 'block') : '',
-			ArrayHelper::getValue($this->address, 'building') ? 'строение ' . ArrayHelper::getValue($this->address, 'building') : '',
-			ArrayHelper::getValue($this->address, 'appartment') ? 'кв. ' . ArrayHelper::getValue($this->address, 'appartment') : '',
+			ArrayHelper::getValue($this->address, 'street') ? Yii::t('shop/common', 'st.') . ' ' . ArrayHelper::getValue($this->address, 'street') : '',
+			ArrayHelper::getValue($this->address, 'house') ? Yii::t('shop/common', 'house') . ' ' . ArrayHelper::getValue($this->address, 'house') : '',
+			ArrayHelper::getValue($this->address, 'block') ? Yii::t('shop/common', 'block') . ' ' . ArrayHelper::getValue($this->address, 'block') : '',
+			ArrayHelper::getValue($this->address, 'building') ? Yii::t('shop/common', 'building') . ' ' . ArrayHelper::getValue($this->address, 'building') : '',
+			ArrayHelper::getValue($this->address, 'appartment') ? Yii::t('shop/common', 'apt.') . ' ' . ArrayHelper::getValue($this->address, 'appartment') : '',
 		]));
 	}
 
 	/**
-	 * Сумма товаров в заказе
+	 * The amount of goods in the order
 	 *
 	 * @return mixed
 	 */
@@ -235,7 +237,7 @@ class Order extends \yii\db\ActiveRecord
 	//////////////////////////////////////////////////////////////////
 
 	/**
-	 * Добавляет связи с товарами для нового создаваемого заказа
+	 * Adds links to products for a new order being created
 	 *
 	 * @param array $orderProducts
 	 */

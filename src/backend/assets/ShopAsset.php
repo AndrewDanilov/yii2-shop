@@ -7,10 +7,10 @@ class ShopAsset extends AssetBundle
 {
 	public $sourcePath = '@andrewdanilov/shop/backend/web';
 	public $css = [
-		'css/shop.css?v=20201115',
+		'css/shop.css?v=20210615',
 	];
 	public $js = [
-		'js/shop.js',
+		'js/shop.js?v=20210619',
 	];
 	public $depends = [
 		'yii\web\JqueryAsset',

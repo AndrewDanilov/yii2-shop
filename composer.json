@@ -2,7 +2,7 @@
     "name": "andrewdanilov/yii2-shop",
     "description": "Yii2 Shop",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","shop","product","catalog"],
+    "keywords": ["yii2","extension","shop","product","catalog","stickers"],
     "license": "MIT",
     "authors": [
         {
@@ -25,5 +25,8 @@
         "psr-4": {
             "andrewdanilov\\shop\\": "src/"
         }
+    },
+    "extra": {
+        "bootstrap": "andrewdanilov\\shop\\Bootstrap"
     }
 }

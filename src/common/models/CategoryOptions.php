@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_category_options".
  *
@@ -36,9 +38,9 @@ class CategoryOptions extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'category_id' => 'Category ID',
-            'option_id' => 'Option ID',
+            'id' => Yii::t('shop/common', 'ID'),
+            'category_id' => Yii::t('shop/common', 'Category ID'),
+            'option_id' => Yii::t('shop/common', 'Option ID'),
         ];
     }
 }

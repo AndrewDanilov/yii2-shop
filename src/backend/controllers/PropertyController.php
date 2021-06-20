@@ -1,10 +1,14 @@
 <?php
 namespace andrewdanilov\shop\backend\controllers;
 
-use Yii;
-use yii\web\NotFoundHttpException;
-use andrewdanilov\shop\common\models\Property;
+use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\backend\models\PropertySearch;
+use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\common\models\CategoryProperties;
+use andrewdanilov\shop\common\models\Property;
+use Yii;
+use yii\db\Query;
+use yii\web\NotFoundHttpException;
 
 class PropertyController extends BaseController
 {
@@ -14,12 +18,27 @@ class PropertyController extends BaseController
      */
     public function actionIndex()
     {
+	    $pages_query = (new Query())
+		    ->select('COUNT(*)')
+		    ->from(CategoryProperties::tableName())
+		    ->where(CategoryProperties::tableName() . '.category_id = ' . Category::tableName() . '.id');
+	    $categories_query = Category::find()
+		    ->select([
+			    Category::tableName() . '.id',
+			    Category::tableName() . '.parent_id',
+			    Category::tableName() . '.name',
+			    'count' => $pages_query,
+		    ])
+		    ->orderBy(['order' => SORT_ASC]);
+	    $tree = NestedCategoryHelper::getPlaneTree($categories_query);
+
         $searchModel = new PropertySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+	        'tree' => $tree,
         ]);
     }
 

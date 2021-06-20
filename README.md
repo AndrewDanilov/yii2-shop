@@ -32,8 +32,6 @@ Do not forget to run migrations after extension updates too.
 Usage
 -----
 
-_Extension is in testing. Do not use it!_
-
 In backend main config `modules` section add:
 
 ```php
@@ -45,6 +43,8 @@ $config = [
 			'class' => 'andrewdanilov\shop\backend\Module',
 			// access role for module controllers, optional, default is ['@']
 			'access' => ['admin'],
+			// path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
+			'translatesPath' => '@common/messages/shop',
 			// file manager configuration, optional, default is:
 			'fileManager' => [
 				'basePath' => '@frontend/web',
@@ -60,6 +60,14 @@ $config = [
 					[
 						'name' => 'Brand images',
 						'path' => 'upload/images/brand',
+					],
+					[
+						'name' => 'Sticker images',
+						'path' => 'upload/images/sticker',
+					],
+					[
+						'name' => 'Documents',
+						'path' => 'upload/images/docs',
 					],
 				],
 			],
@@ -79,27 +87,8 @@ $config = [
 		// ...
 		'shop' => [
 			'class' => 'andrewdanilov\shop\frontend\Module',
-		],
-	],
-];
-```
-
-To use extension's default url rules, add `UrlRule` class to `urlManager` `rules` section of frontend main config:
-
-```php
-$config = [
-	// ...
-	'components' => [
-		// ...
-		'urlManager' => [
-			// ...
-			'rules' => [
-				// ...
-				[
-					'class' => 'andrewdanilov\shop\frontend\components\UrlRule',
-				],
-				// ...
-			],
+			// path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
+			'translatesPath' => '@common/messages/shop',
 		],
 	],
 ];
@@ -118,5 +107,29 @@ $shop_menu_items = [
 	['label' => 'Связи', 'icon' => 'link', 'url' => ['/shop/relation']],
 	['label' => 'Способы оплаты', 'icon' => 'wallet', 'url' => ['/shop/pay']],
 	['label' => 'Способы доставки', 'icon' => 'truck', 'url' => ['/shop/delivery']],
+	['label' => 'Стикеры', 'icon' => 'bookmark', 'url' => ['/shop/sticker']],
+];
+
+echo Menu::widget(['items' => $shop_menu_items]);
+```
+
+
+Features
+--------
+
+### I18n
+
+Extension supports internationalisation. You can set your language in `common/config/main.php`
+
+```php
+return [
+	// ...
+	'language' => 'ru-RU',
+	// ...
 ];
 ```
+
+On the moment you can use one of languages out of the box: English, Russian. Also you can create and use your own
+translations by defining `translatesPath` property of shop module (see above). Therefore, you need to place
+language files to `xx-XX` folder inside `translatesPath` path. You can copy example from `src/common/messages` path
+of extension.

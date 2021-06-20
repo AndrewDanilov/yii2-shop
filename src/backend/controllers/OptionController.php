@@ -1,10 +1,14 @@
 <?php
 namespace andrewdanilov\shop\backend\controllers;
 
-use Yii;
-use yii\web\NotFoundHttpException;
-use andrewdanilov\shop\common\models\Option;
+use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\backend\models\OptionSearch;
+use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\common\models\CategoryOptions;
+use andrewdanilov\shop\common\models\Option;
+use Yii;
+use yii\db\Query;
+use yii\web\NotFoundHttpException;
 
 class OptionController extends BaseController
 {
@@ -14,12 +18,27 @@ class OptionController extends BaseController
      */
     public function actionIndex()
     {
+	    $pages_query = (new Query())
+		    ->select('COUNT(*)')
+		    ->from(CategoryOptions::tableName())
+		    ->where(CategoryOptions::tableName() . '.category_id = ' . Category::tableName() . '.id');
+	    $categories_query = Category::find()
+		    ->select([
+			    Category::tableName() . '.id',
+			    Category::tableName() . '.parent_id',
+			    Category::tableName() . '.name',
+			    'count' => $pages_query,
+		    ])
+		    ->orderBy(['order' => SORT_ASC]);
+	    $tree = NestedCategoryHelper::getPlaneTree($categories_query);
+
         $searchModel = new OptionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+	        'tree' => $tree,
         ]);
     }
 

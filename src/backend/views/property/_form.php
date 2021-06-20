@@ -1,5 +1,6 @@
 <?php
 
+use andrewdanilov\shop\backend\assets\ShopAsset;
 use andrewdanilov\shop\common\models\Group;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -12,6 +13,8 @@ use andrewdanilov\shop\common\models\Category;
 /* @var $this yii\web\View */
 /* @var $model Property|TagBehavior|ValueTypeBehavior */
 /* @var $form yii\widgets\ActiveForm */
+
+ShopAsset::register($this);
 ?>
 
 <div class="shop-attribute-form">
@@ -22,19 +25,22 @@ use andrewdanilov\shop\common\models\Category;
 
 	<?= $form->field($model, 'type')->dropDownList(ValueTypeBehavior::getTypeList()) ?>
 
-	<?= $form->field($model, 'categoryIds')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
+	<?= $form->field($model, 'unit')->textInput(['maxlength' => true]) ?>
+
+	<?= $form->field($model, 'is_filtered')->checkbox() ?>
+
+	<?= $form->field($model, 'filter_type')->dropDownList(Property::getFilterTypes()) ?>
+
+	<?= $form->field($model, 'category_ids')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
 	<?php if (!empty($groupList = Group::getGroupList())) { ?>
-		<?= $form->field($model, 'groupIds')->checkboxList($groupList) ?>
+		<?= $form->field($model, 'group_ids')->checkboxList($groupList) ?>
 	<?php } ?>
-
-	<label class="control-label">Дополнительно</label>
-	<?= $form->field($model, 'is_filtered')->checkbox() ?>
 
     <?= $form->field($model, 'order')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('shop/backend', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

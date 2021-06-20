@@ -1,27 +1,54 @@
 <?php
 
-use yii\helpers\Html;
-use yii\grid\GridView;
-use andrewdanilov\behaviors\TagBehavior;
+/* @var $this yii\web\View */
+/* @var $tree array */
+/* @var $searchModel PropertySearch|ValueTypeBehavior */
+/* @var $dataProvider ActiveDataProvider */
+
 use andrewdanilov\behaviors\ValueTypeBehavior;
 use andrewdanilov\helpers\NestedCategoryHelper;
-use andrewdanilov\shop\common\models\Property;
-use andrewdanilov\shop\common\models\Group;
-use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\backend\assets\ShopAsset;
 use andrewdanilov\shop\backend\models\PropertySearch;
+use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\common\models\Group;
+use andrewdanilov\shop\common\models\Property;
+use yii\data\ActiveDataProvider;
+use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $searchModel PropertySearch|ValueTypeBehavior */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Свойства';
+$this->title = Yii::t('shop/backend', 'Properties');
 $this->params['breadcrumbs'][] = $this->title;
+
+ShopAsset::register($this);
+
+$create_property_url = ['property/create'];
+if (!empty($propertySearch = array_filter(Yii::$app->request->get('PropertySearch', [])))) {
+	$create_property_url['PropertySearch'] = $propertySearch;
+}
 ?>
 <div class="shop-attribute-index">
 
-	<p>
-		<?= Html::a('Новое свойство', ['create'], ['class' => 'btn btn-success']) ?>
-	</p>
+	<div class="shop-editor-actions">
+		<?= Html::a(Yii::t('shop/backend', 'New property'), $create_property_url, ['class' => 'btn btn-success']) ?>
+	</div>
+
+	<div class="shop-editor-boxes">
+		<div class="shop-editor-box">
+			<div class="shop-tree-list">
+				<?php foreach ($tree as $item) { ?>
+					<div class="shop-list-item level-<?= $item['level'] ?> <?php if (ArrayHelper::getValue($propertySearch, 'category_id') == $item['category']['id']) { ?>active-item<?php } ?>">
+						<div class="shop-tree-actions">
+							<?= Html::a('<span class="fa fa-folder"></span>', ['property/index', 'PropertySearch' => ['category_id' => $item['category']['id']]], ['title' => Yii::t('shop/backend', 'Open')]); ?>
+							<?= Html::a('<span class="fa fa-pen"></span>', ['category/update', 'id' => $item['category']['id']], ['title' => Yii::t('shop/backend', 'Edit')]) ?>
+							<?= Html::a('<span class="fa fa-trash"></span>', ['category/delete', 'id' => $item['category']['id']], ['data' => ['confirm' => Yii::t('shop/backend', 'Are you sure you want to delete this category?'), 'method' => 'post'], 'title' => Yii::t('shop/backend', 'Remove')]) ?>
+						</div>
+						<div class="shop-tree-link"><?= Html::a($item['category']['name'] . ' (' . $item['category']['count'] . ')', ['property/index', 'PropertySearch' => ['category_id' => $item['category']['id']]], ['title' => Yii::t('shop/backend', 'Open')]) ?></div>
+					</div>
+				<?php } ?>
+			</div>
+		</div>
+	</div>
 
 	<?= GridView::widget([
 		'dataProvider' => $dataProvider,
@@ -44,8 +71,23 @@ $this->params['breadcrumbs'][] = $this->title;
 				},
 				'filter' => ValueTypeBehavior::getTypeList(),
 			],
+			'unit',
+			'is_filtered:boolean',
 			[
-				'attribute' => 'category_id',
+				'attribute' => 'filter_type',
+				'value' => function ($model) {
+					/* @var $model Property */
+					if ($model->is_filtered && in_array($model->type, [ValueTypeBehavior::VALUE_TYPE_STRING, ValueTypeBehavior::VALUE_TYPE_INTEGER])) {
+						$filter_types = Property::getFilterTypes();
+						if (isset($filter_types[$model->filter_type])) {
+							return $filter_types[$model->filter_type];
+						}
+					}
+					return '';
+				}
+			],
+			[
+				'attribute' => 'category_ids',
 				'value' => function($model) {
 					/* @var $model Property */
 					return $model->categoriesDelimitedString();
@@ -54,19 +96,18 @@ $this->params['breadcrumbs'][] = $this->title;
 				'filterOptions' => ['style' => 'font-family:monospace;'],
 			],
 			[
-				'attribute' => 'group_id',
+				'attribute' => 'group_ids',
 				'value' => function($model) {
 					/* @var $model Property */
 					return $model->groupsDelimitedString();
 				},
 				'filter' => Group::getGroupList(),
 			],
-			'is_filtered:boolean',
 			'order',
 
 			[
-				'class' => 'yii\grid\ActionColumn',
-				'template' => '{update}&nbsp;&nbsp;&nbsp;&nbsp;{delete}',
+				'class' => 'andrewdanilov\gridtools\FontawesomeActionColumn',
+				'template' => '{update}{delete}',
 				'contentOptions' => ['style' => 'white-space: nowrap;'],
 			],
 		],

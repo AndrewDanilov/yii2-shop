@@ -2,7 +2,7 @@
 namespace andrewdanilov\shop\backend\widgets\ProductOptions;
 
 /**
- * Инициализирует необходимые для работы опций скрипты
+ * Initializes the scripts necessary for the options to work
  */
 
 use yii\base\Widget;

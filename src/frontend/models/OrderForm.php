@@ -55,20 +55,20 @@ class OrderForm extends Model
 	public function attributeLabels()
 	{
 		return [
-			'name' => Yii::t('site', 'Имя'),
-			'email' => Yii::t('site', 'E-mail'),
-			'phone' => Yii::t('site', 'Телефон'),
-			'city' => Yii::t('site', 'Город'),
-			'street' => Yii::t('site', 'Улица'),
-			'house' => Yii::t('site', 'Дом'),
-			'appartment' => Yii::t('site', 'Квартира'),
-			'delivery_id' => Yii::t('site', 'Способ доставки'),
-			'pay_id' => Yii::t('site', 'Способ оплаты'),
-			'postindex' => Yii::t('site', 'Почтовый индекс'),
-			'block' => Yii::t('site', 'Корпус'),
-			'building' => Yii::t('site', 'Строение'),
-			'organization' => Yii::t('site', 'Организация'),
-			'inn' => Yii::t('site', 'ИНН'),
+			'name' => Yii::t('shop/frontend', 'Name'),
+			'email' => Yii::t('shop/frontend', 'E-mail'),
+			'phone' => Yii::t('shop/frontend', 'Phone'),
+			'city' => Yii::t('shop/frontend', 'City'),
+			'street' => Yii::t('shop/frontend', 'Street'),
+			'house' => Yii::t('shop/frontend', 'House'),
+			'appartment' => Yii::t('shop/frontend', 'Apartment'),
+			'delivery_id' => Yii::t('shop/frontend', 'Delivery method'),
+			'pay_id' => Yii::t('shop/frontend', 'Paymetn method'),
+			'postindex' => Yii::t('shop/frontend', 'Zip code'),
+			'block' => Yii::t('shop/frontend', 'Block'),
+			'building' => Yii::t('shop/frontend', 'Building'),
+			'organization' => Yii::t('shop/frontend', 'Organization'),
+			'inn' => Yii::t('shop/frontend', 'INN'),
 		];
 	}
 }

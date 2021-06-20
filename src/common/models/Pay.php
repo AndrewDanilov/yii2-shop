@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_pay".
  *
@@ -40,10 +42,10 @@ class Pay extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'order' => 'Порядок',
-            'name' => 'Название',
-	        'description' => 'Описание',
+            'id' => Yii::t('shop/common', 'ID'),
+            'order' => Yii::t('shop/common', 'Order'),
+            'name' => Yii::t('shop/common', 'Name'),
+	        'description' => Yii::t('shop/common', 'Description'),
         ];
     }
 

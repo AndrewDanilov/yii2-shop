@@ -1,22 +1,23 @@
 <?php
 namespace andrewdanilov\shop\backend\models;
 
+use andrewdanilov\shop\common\models\Category;
+use andrewdanilov\shop\common\models\Product;
+use andrewdanilov\shop\common\models\Sticker;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use andrewdanilov\shop\common\models\ProductCategories;
-use andrewdanilov\shop\common\models\Product;
 
 /**
  * Class ProductSearch
  *
  * @package andrewdanilov\shop\backend\models
  * @property int $category_id
- * @property string $marks
+ * @property int $sticker_id
  */
 class ProductSearch extends Product
 {
 	public $category_id;
-	public $marks;
+	public $sticker_id;
 
 	/**
      * @inheritdoc
@@ -24,10 +25,9 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'brand_id', 'category_id', 'is_new', 'is_popular', 'is_action', 'discount', 'order'], 'integer'],
+            [['id', 'brand_id', 'discount', 'order', 'category_id', 'sticker_id', 'is_stock'], 'integer'],
             [['price'], 'number'],
 	        [['name', 'article'], 'string'],
-	        [['marks'], 'validateMarks'],
         ];
     }
 
@@ -40,13 +40,6 @@ class ProductSearch extends Product
         return Model::scenarios();
     }
 
-    public function validateMarks($attribute)
-    {
-    	if (!in_array($this->$attribute, array_keys(static::getMarksList()))) {
-    		$this->addError($attribute, 'Product mark is not in allowed list values');
-	    }
-    }
-
     /**
      * Creates data provider instance with search query applied
      *
@@ -56,7 +49,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find()->joinWith(['tagRef'])->groupBy('id');
+        $query = Product::find()->joinWith(['categories', 'stickers'])->groupBy('id');
 
         // add conditions that should always apply here
 
@@ -91,19 +84,14 @@ class ProductSearch extends Product
 	        Product::tableName() . '.brand_id' => $this->brand_id,
 	        Product::tableName() . '.price' => $this->price,
 	        Product::tableName() . '.discount' => $this->discount,
-	        Product::tableName() . '.is_new' => $this->is_new,
-	        Product::tableName() . '.is_popular' => $this->is_popular,
-	        Product::tableName() . '.is_action' => $this->is_action,
+	        Product::tableName() . '.is_stock' => $this->is_stock,
 	        Product::tableName() . '.order' => $this->order,
-	        ProductCategories::tableName() . '.category_id' => $this->category_id,
+	        Category::tableName() . '.id' => $this->category_id,
+	        Sticker::tableName() . '.id' => $this->sticker_id,
         ]);
 
 	    $query->andFilterWhere(['like', Product::tableName() . '.article', $this->article])
 		    ->andFilterWhere(['like', Product::tableName() . '.name', $this->name]);
-
-	    if ($this->marks) {
-	    	$query->andWhere([$this->marks => 1]);
-	    }
 
         return $dataProvider;
     }

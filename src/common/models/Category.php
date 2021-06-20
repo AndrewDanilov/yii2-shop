@@ -1,6 +1,7 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
 use yii\db\Query;
 use yii\helpers\Inflector;
 use andrewdanilov\helpers\NestedCategoryHelper;
@@ -58,23 +59,23 @@ class Category extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id' => 'ID',
-			'parent_id' => 'Родительская категория',
-			'image' => 'Обложка',
-			'order' => 'Порядок',
-			'name' => 'Название',
-			'short_description' => 'Краткое описание',
-			'description' => 'Подробное описание',
-			'seo_title' => 'Seo Title',
-			'seo_description' => 'Seo Description',
-			'slug' => 'Seo Url',
+			'id' => Yii::t('shop/common', 'ID'),
+			'parent_id' => Yii::t('shop/common', 'Parent category'),
+			'image' => Yii::t('shop/common', 'Cover'),
+			'order' => Yii::t('shop/common', 'Order'),
+			'name' => Yii::t('shop/common', 'Name'),
+			'short_description' => Yii::t('shop/common', 'Short description'),
+			'description' => Yii::t('shop/common', 'Description'),
+			'seo_title' => Yii::t('shop/common', 'Seo Title'),
+			'seo_description' => Yii::t('shop/common', 'Seo Description'),
+			'slug' => Yii::t('shop/common', 'Seo Url'),
 		];
 	}
 
 	public function validateParent($attribute, $params, $validator)
 	{
 		if ($this->$attribute == $this->id) {
-			$this->addError($attribute, 'Категория не может быть вложена сама в себя');
+			$this->addError($attribute, Yii::t('shop/common', 'Category cannot be nested in itself'));
 		}
 	}
 
@@ -142,7 +143,7 @@ class Category extends \yii\db\ActiveRecord
 		if (empty($this->slug)) {
 			$this->slug = Inflector::slug($this->name);
 			if (empty($this->slug)) {
-				$this->slug = 'category-' . $this->id;
+				$this->slug = 'category-' . date('YMDHis');
 			}
 		}
 		return parent::beforeSave($insert);
@@ -161,17 +162,21 @@ class Category extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Возвращает все возможные значения всех свойств товаров указанной категории.
-	 * Возвращаются только свойства имеющие признак is_filtered.
-	 * Результат в виде массива:
+	 * Returns all possible values for all properties of products in the specified category.
+	 * Only properties with the is_filtered flag are returned.
+	 * Result as array:
 	 * [
 	 *   '1' => [
 	 *     'name' => 'Property 1 Name',
 	 *     'values' => ['value 1', 'value 2'],
+	 *     'type' => 'string',
+	 *     'filter_type' => 'checkboxes',
 	 *   ]
 	 *   '2' => [
 	 *     'name' => 'Property 2 Name',
 	 *     'values' => ['value 1', 'value 2'],
+	 *     'type' => 'integer',
+	 *     'filter_type' => 'interval',
 	 *   ]
 	 * ]
 	 *
@@ -190,6 +195,8 @@ class Category extends \yii\db\ActiveRecord
 				ProductProperties::tableName() . '.property_id',
 				ProductProperties::tableName() . '.value',
 				Property::tableName() . '.name',
+				Property::tableName() . '.type',
+				Property::tableName() . '.filter_type',
 			])
 			->from(ProductCategories::tableName())
 			->innerJoin(ProductProperties::tableName(), ProductProperties::tableName() . '.product_id = ' . ProductCategories::tableName() . '.product_id')
@@ -211,6 +218,8 @@ class Category extends \yii\db\ActiveRecord
 		foreach ($category_product_properties as $property) {
 			if (!isset($filtered_properties[$property['property_id']])) {
 				$filtered_properties[$property['property_id']]['name'] = $property['name'];
+				$filtered_properties[$property['property_id']]['type'] = $property['type'];
+				$filtered_properties[$property['property_id']]['filter_type'] = $property['filter_type'];
 			}
 			$filtered_properties[$property['property_id']]['values'][md5($property['value'])] = $property['value'];
 		}

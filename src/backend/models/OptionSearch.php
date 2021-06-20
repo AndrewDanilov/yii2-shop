@@ -1,28 +1,23 @@
 <?php
 namespace andrewdanilov\shop\backend\models;
 
-use yii\base\Model;
-use yii\data\ActiveDataProvider;
 use andrewdanilov\shop\common\models\Option;
 use andrewdanilov\shop\common\models\CategoryOptions;
+use yii\base\Model;
+use yii\data\ActiveDataProvider;
 
 /**
  * Class OptionSearch
- *
- * @package andrewdanilov\shop\backend\models
- * @property int $category_id
  */
 class OptionSearch extends Option
 {
-	public $category_id;
-
 	/**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'order', 'category_id', 'is_filtered'], 'integer'],
+            [['id', 'order', 'category_ids', 'is_filtered'], 'integer'],
 	        [['name'], 'string'],
         ];
     }
@@ -77,7 +72,7 @@ class OptionSearch extends Option
 	        Option::tableName() . '.id' => $this->id,
 	        Option::tableName() . '.is_filtered' => $this->is_filtered,
 	        Option::tableName() . '.order' => $this->order,
-	        CategoryOptions::tableName() . '.category_id' => $this->category_id,
+	        CategoryOptions::tableName() . '.category_id' => $this->category_ids,
         ]);
 
 	    $query->andFilterWhere(['like', Option::tableName() . '.name', $this->name]);

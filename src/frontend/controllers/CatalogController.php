@@ -10,9 +10,7 @@ use andrewdanilov\shop\common\models\Product;
 use andrewdanilov\shop\common\models\ProductProperties;
 use andrewdanilov\shop\common\models\Category;
 
-/**
- * Site controller
- */
+// todo
 class CatalogController extends Controller
 {
 	public function actionIndex()

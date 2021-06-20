@@ -1,12 +1,13 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 /**
  * Class Group
  *
- * @package andrewdanilov\shop\common\models
+ * @property string $id
  * @property string $name
  * @property string $code
  * @property int $order
@@ -33,9 +34,10 @@ class Group extends ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'name' => 'Наименование группы',
-			'code' => 'Код группы',
-			'order' => 'Порядок',
+			'ID' => Yii::t('shop/common', 'ID'),
+			'name' => Yii::t('shop/common', 'Group name'),
+			'code' => Yii::t('shop/common', 'Group code'),
+			'order' => Yii::t('shop/common', 'Order'),
 		];
 	}
 

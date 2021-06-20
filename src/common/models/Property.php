@@ -2,6 +2,7 @@
 namespace andrewdanilov\shop\common\models;
 
 use andrewdanilov\behaviors\TagBehavior;
+use Yii;
 
 /**
  * This is the model class for table "shop_property".
@@ -11,12 +12,23 @@ use andrewdanilov\behaviors\TagBehavior;
  * @property int $order
  * @property string $name
  * @property bool $is_filtered
+ * @property string $filter_type
+ * @property string $unit
  * @property Product[] $products
  * @property Category[] $categories
+ * @property integer[] $category_ids
  * @property Group[] $groups
+ * @property integer[] $group_ids
  */
 class Property extends \yii\db\ActiveRecord
 {
+	const FILTER_TYPE_CHECKBOXES = 'checkboxes';
+	const FILTER_TYPE_LIST = 'list';
+	const FILTER_TYPE_INTERVAL = 'interval';
+
+	public $category_ids;
+	public $group_ids;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -29,6 +41,7 @@ class Property extends \yii\db\ActiveRecord
 				'referenceModelAttribute' => 'property_id',
 				'referenceModelTagAttribute' => 'category_id',
 				'tagModelClass' => Category::class,
+				'ownerModelIdsAttribute' => 'category_ids',
 			],
 			'group' => [
 				'class' => TagBehavior::class,
@@ -36,6 +49,7 @@ class Property extends \yii\db\ActiveRecord
 				'referenceModelAttribute' => 'property_id',
 				'referenceModelTagAttribute' => 'group_id',
 				'tagModelClass' => Group::class,
+				'ownerModelIdsAttribute' => 'group_ids',
 			],
 		];
 	}
@@ -56,10 +70,9 @@ class Property extends \yii\db\ActiveRecord
 		return [
 			[['type', 'name'], 'required'],
 			[['order', 'is_filtered'], 'integer'],
-			[['name'], 'string', 'max' => 255],
+			[['name', 'filter_type', 'unit'], 'string', 'max' => 255],
 			[['order', 'is_filtered'], 'default', 'value' => 0],
 			[['type'], 'string', 'max' => 10],
-			[['categoryIds', 'groupIds'], 'safe'],
 		];
 	}
 
@@ -69,17 +82,19 @@ class Property extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id' => 'ID',
-			'type' => 'Тип',
-			'order' => 'Порядок',
-			'name' => 'Название',
-			'categoryIds' => 'Категории',
-			'category_id' => 'Категории',
-			'groupIds' => 'Группы свойств',
-			'group_id' => 'Группы свойств',
-			'is_filtered' => 'Использовать в фильтре',
+			'id' => Yii::t('shop/common', 'ID'),
+			'type' => Yii::t('shop/common', 'Type'),
+			'order' => Yii::t('shop/common', 'Order'),
+			'name' => Yii::t('shop/common', 'Name'),
+			'category_ids' => Yii::t('shop/common', 'Categories'),
+			'group_ids' => Yii::t('shop/common', 'Property groups'),
+			'is_filtered' => Yii::t('shop/common', 'Use in filter'),
+			'filter_type' => Yii::t('shop/common', 'Filter type'),
+			'unit' => Yii::t('shop/common', 'Unit of measure'),
 		];
 	}
+
+	//////////////////////////////////////////////////////////////////
 
 	public function getProducts()
 	{
@@ -90,7 +105,7 @@ class Property extends \yii\db\ActiveRecord
 	{
 		$behavior = $this->getBehavior('category');
 		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTag();
+			return $behavior->getTags();
 		}
 		return null;
 	}
@@ -99,47 +114,9 @@ class Property extends \yii\db\ActiveRecord
 	{
 		$behavior = $this->getBehavior('group');
 		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTag();
+			return $behavior->getTags();
 		}
 		return null;
-	}
-
-	//////////////////////////////////////////////////////////////////
-
-	public function getCategoryIds()
-	{
-		$behavior = $this->getBehavior('category');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTagIds();
-		}
-		return [];
-	}
-
-	public function setCategoryIds($ids)
-	{
-		$behavior = $this->getBehavior('category');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->setTagIds($ids);
-		}
-		return [];
-	}
-
-	public function getGroupIds()
-	{
-		$behavior = $this->getBehavior('group');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->getTagIds();
-		}
-		return [];
-	}
-
-	public function setGroupIds($ids)
-	{
-		$behavior = $this->getBehavior('group');
-		if ($behavior instanceof TagBehavior) {
-			return $behavior->setTagIds($ids);
-		}
-		return [];
 	}
 
 	//////////////////////////////////////////////////////////////////
@@ -155,16 +132,25 @@ class Property extends \yii\db\ActiveRecord
 	public function categoriesDelimitedString()
 	{
 		$allCategories = Category::getCategoriesList();
-		$categories = $this->getCategoryIds();
-		$categories = array_intersect_key($allCategories, array_flip($categories));
+		$categories = array_intersect_key($allCategories, array_flip($this->category_ids));
 		return implode(', ', $categories);
 	}
 
 	public function groupsDelimitedString()
 	{
 		$allGroups = Group::getGroupList();
-		$groups = $this->getGroupIds();
-		$groups = array_intersect_key($allGroups, array_flip($groups));
+		$groups = array_intersect_key($allGroups, array_flip($this->group_ids));
 		return implode(', ', $groups);
+	}
+	
+	//////////////////////////////////////////////////////////////////
+	
+	public static function getFilterTypes()
+	{
+		return [
+			self::FILTER_TYPE_CHECKBOXES => Yii::t('shop/common', 'Checkboxes'),
+			self::FILTER_TYPE_LIST => Yii::t('shop/common', 'List'),
+			self::FILTER_TYPE_INTERVAL => Yii::t('shop/common', 'Interval'),
+		];
 	}
 }

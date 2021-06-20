@@ -1,6 +1,8 @@
 <?php
 namespace andrewdanilov\shop\common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "shop_category_properties".
  *
@@ -36,9 +38,9 @@ class CategoryProperties extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'category_id' => 'Category ID',
-            'property_id' => 'Property ID',
+            'id' => Yii::t('shop/common', 'ID'),
+            'category_id' => Yii::t('shop/common', 'Category ID'),
+            'property_id' => Yii::t('shop/common', 'Property ID'),
         ];
     }
 }

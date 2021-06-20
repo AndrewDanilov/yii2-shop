@@ -2,14 +2,15 @@
 namespace andrewdanilov\shop\backend\widgets\ProductOptions;
 
 /**
- * Возвращает html код связи опции с товаром, содержащий
- * поля для ввода значений присвоенных связи опция-товар.
+ * Returns the html code for linking the option with the product, containing
+ * fields for entering the values assigned to the link option-product.
  */
 
+use andrewdanilov\shop\common\models\ProductOptions;
+use Yii;
 use yii\base\Widget;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use andrewdanilov\shop\common\models\ProductOptions;
 
 class ProductOptionHtml extends Widget
 {
@@ -41,7 +42,7 @@ class ProductOptionHtml extends Widget
 		foreach ($option_fields as $option_field) {
 			$optionGroupContent .= $option_field;
 		}
-		$optionGroupContent .= Html::tag('div', 'Удалить опцию', ['class' => 'option-group-remove btn btn-danger']);
+		$optionGroupContent .= Html::tag('div', Yii::t('shop/backend', 'Remove option'), ['class' => 'option-group-remove btn btn-danger']);
 
 		return Html::tag('div', $optionGroupContent, ['class' => 'option-group']);
 	}
