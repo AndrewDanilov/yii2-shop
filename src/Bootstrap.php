@@ -15,6 +15,8 @@ class Bootstrap implements BootstrapInterface
 	{
 		if (Yii::$app->id === $this->appFrontendId) {
 			$app->getUrlManager()->addRules([
+				'shop-api/<action>' => 'shop/shop-api/<action>',
+				'checkout/<action>' => 'shop/checkout/<action>',
 				[
 					'class' => 'andrewdanilov\shop\frontend\components\UrlRule',
 				]

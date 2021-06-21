@@ -40,7 +40,7 @@ use andrewdanilov\behaviors\ValueTypeBehavior;
  * @property ProductProperties[] $productProperties
  * @property ProductOptions[] $productOptions
  * @property ProductOptions[] $defaultProductOptions
- * @property string|float|int $priceWithMargin
+ * @property string|float|int $priceWithOptions
  */
 class Product extends \yii\db\ActiveRecord
 {

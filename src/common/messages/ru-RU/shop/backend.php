@@ -18,7 +18,6 @@
  */
 return [
     'Add option' => 'Добавить опцию',
-    'Additionally' => 'Дополнительно',
     'Are you sure you want to delete this category?' => 'Вы уверены, что хотите удалить эту категорию?',
     'Edit' => 'Изменить',
     'Edit property' => 'Изменить свойство',

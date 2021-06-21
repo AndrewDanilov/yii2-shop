@@ -1,6 +1,8 @@
 Yii2 Shop
 ===================
 
+Customizable shop module with hierarchical categories, product properties and options, cart, product stickers. Supports i18n.
+
 
 Installation
 ------------
@@ -87,31 +89,88 @@ $config = [
 		// ...
 		'shop' => [
 			'class' => 'andrewdanilov\shop\frontend\Module',
+			// path to template views, optional, default is '@andrewdanilov/shop/frontend/views'
+			'templatesPath' => '@frontend/views/shop',
+			// path to mail template views, optional, default is '@andrewdanilov/shop/common/mail'
+			'mailTemplatesPath' => '@common/mail/shop',
 			// path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
 			'translatesPath' => '@common/messages/shop',
+			// main currency, using by shop, optional, default is 'USD'
+			'currency' => '$',
 		],
 	],
+	// If you use own templates paths, you need to add `shop` module to `bootstrap` section
+	// to enable i18n and other settings before using module parts.
+	// This is optional, but recommended in any way.
+	'bootstrap' => ['shop'],
 ];
 ```
+
+In `common/params.php` config add `adminEmail` param like this.
+
+```php
+return [
+    // ...
+    'adminEmail' => 'admin@example.com',
+    // ...
+];
+```
+
+You will get system messages (i.e. order from site) on this e-mail.
 
 Backend menu items:
 
 ```php
 $shop_menu_items = [
-	['label' => 'Заказы', 'icon' => 'shopping-bag', 'url' => ['/shop/order']],
-	['label' => 'Товары', 'icon' => 'shopping-cart', 'url' => ['/shop/product']],
-	['label' => 'Бренды', 'icon' => 'leaf', 'url' => ['/shop/brand']],
-	['label' => 'Свойства', 'icon' => 'list', 'url' => ['/shop/property']],
-	['label' => 'Опции', 'icon' => 'check-square', 'url' => ['/shop/option']],
-	['label' => 'Группы свойств', 'icon' => 'tags', 'url' => ['/shop/group']],
-	['label' => 'Связи', 'icon' => 'link', 'url' => ['/shop/relation']],
-	['label' => 'Способы оплаты', 'icon' => 'wallet', 'url' => ['/shop/pay']],
-	['label' => 'Способы доставки', 'icon' => 'truck', 'url' => ['/shop/delivery']],
-	['label' => 'Стикеры', 'icon' => 'bookmark', 'url' => ['/shop/sticker']],
+	['label' => 'Заказы', 'url' => ['/shop/order']],
+	['label' => 'Товары', 'url' => ['/shop/product']],
+	['label' => 'Бренды', 'url' => ['/shop/brand']],
+	['label' => 'Свойства', 'url' => ['/shop/property']],
+	['label' => 'Опции', 'url' => ['/shop/option']],
+	['label' => 'Группы свойств', 'url' => ['/shop/group']],
+	['label' => 'Связи', 'url' => ['/shop/relation']],
+	['label' => 'Способы оплаты', 'url' => ['/shop/pay']],
+	['label' => 'Способы доставки', 'url' => ['/shop/delivery']],
+	['label' => 'Стикеры', 'url' => ['/shop/sticker']],
 ];
 
-echo Menu::widget(['items' => $shop_menu_items]);
+echo \yii\widgets\Menu::widget(['items' => $shop_menu_items]);
 ```
+
+Widgets
+-------
+
+You can use these widgets to add cart, mini-cart, modal windows and buy buttons to your shop:
+
+```php
+// Place this widget everywhere you want to see buy button
+echo \andrewdanilov\shop\frontend\widgets\Buttons\Buy::widget([
+    'product_id' => 123,
+    // optional, text label displaying on buy button
+    'label' => 'Buy it!',
+    // optional, html tag uset for representing buy button
+    'tag' => 'div',
+    // optional, extended classes for buy button
+    'classes' => 'orange-buy-button',
+    // optional, use to define own template for buy button
+    'template' => '@frontend/views/shop/buy-button',
+]);
+
+// Place these two widgets on checkout page.
+// First is for displaying form to retrieve client information like e-mail, phone, etc.
+// Second is for displaying cart contents table.
+\andrewdanilov\shop\frontend\widgets\Checkout\Client::widget();
+\andrewdanilov\shop\frontend\widgets\Checkout\FullCart::widget();
+
+// Widget for mini-cart button. Place it somewhere in main layout.
+\andrewdanilov\shop\frontend\widgets\Checkout\MiniCart::widget();
+
+// Widget for placing modal windows on page
+\andrewdanilov\shop\frontend\widgets\Forms\Modals::widget();
+```
+
+If you need your own content inside the widgets, you can copy the widget directory to your desired location and
+then call them from there. If you do, remember to change the namespaces accordingly.
 
 
 Features
