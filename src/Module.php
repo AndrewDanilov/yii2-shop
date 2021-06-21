@@ -5,19 +5,12 @@ use Yii;
 
 class Module extends \yii\base\Module
 {
-	public $templatesPath;
 	public $mailTemplatesPath;
 	public $translatesPath;
 	public $currency = 'USD';
 
 	public function init()
 	{
-		// path to templates
-		if (empty($this->templatesPath)) {
-			$this->templatesPath = '@andrewdanilov/shop/frontend/views';
-		}
-		$this->viewPath = $this->templatesPath;
-
 		// path to mail templates
 		if (empty($this->mailTemplatesPath)) {
 			$this->mailTemplatesPath = '@andrewdanilov/shop/common/mail';
