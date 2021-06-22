@@ -111,12 +111,37 @@ In `common/params.php` config add `adminEmail` param like this.
 ```php
 return [
     // ...
-    'adminEmail' => 'admin@example.com',
+    'adminEmail' => ['admin@example.com', 'admin2@example.com'],
+    'senderEmail' => 'noreply@example.com',
+    'senderName' => 'Robot',
     // ...
 ];
 ```
 
-You will get system messages (i.e. order from site) on this e-mail.
+You will get system messages (i.e., order from site) on one of `adminEmail` e-mails from `senderEmail` e-mail.
+
+To transport e-mail messages you must correctly set up `mailer` component in `common/config/main-local.php`.
+For example SMTP transport:
+
+```php
+return [
+    'components' => [
+        // ...
+        'mailer' => [
+	        'class' => 'yii\swiftmailer\Mailer',
+	        'useFileTransport' => false,
+	        'transport' => [
+		        'class' => 'Swift_SmtpTransport',
+		        'username' => 'sender@example.com',
+		        'password' => 'example_password',
+		        'host' => 'smtp.example.com',
+		        'port' => '465',
+		        'encryption' => 'ssl',
+	        ],
+        ],
+    ],
+];
+```
 
 Backend menu items:
 
@@ -188,7 +213,7 @@ return [
 ];
 ```
 
-On the moment you can use one of languages out of the box: English, Russian. Also you can create and use your own
+On the moment you can use one of languages out of the box: English, Russian. Also, you can create and use your own
 translations by defining `translatesPath` property of shop module (see above). Therefore, you need to place
 language files to `xx-XX` folder inside `translatesPath` path. You can copy example from `src/common/messages` path
 of extension.

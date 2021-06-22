@@ -78,7 +78,7 @@ class ShopApiController extends Controller
 
 		$mailer = Yii::$app->mailer;
 		$message = $mailer->compose('send-order', ['cartContent' => $cartContent, 'clientData' => $clientData])
-			->setFrom(Yii::$app->params['adminEmail'])
+			->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']])
 			->setTo(Yii::$app->params['adminEmail'])
 			->setSubject(Yii::t('shop/frontend', 'Order from site'));
 		// отправляем письмо
