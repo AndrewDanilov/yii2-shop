@@ -2,6 +2,7 @@
 namespace andrewdanilov\shop\frontend\controllers;
 
 use andrewdanilov\shop\frontend\models\Cart;
+use andrewdanilov\shop\frontend\Module;
 use Yii;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -77,6 +78,7 @@ class ShopApiController extends Controller
 		];
 
 		$mailer = Yii::$app->mailer;
+		$mailer->viewPath = Module::getInstance()->mailTemplatesPath;
 		$message = $mailer->compose('send-order', ['cartContent' => $cartContent, 'clientData' => $clientData])
 			->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']])
 			->setTo(Yii::$app->params['adminEmail'])

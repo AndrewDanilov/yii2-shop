@@ -15,7 +15,6 @@ class Module extends \yii\base\Module
 		if (empty($this->mailTemplatesPath)) {
 			$this->mailTemplatesPath = '@andrewdanilov/shop/common/mail';
 		}
-		Yii::$app->mailer->viewPath = $this->mailTemplatesPath;
 
 		// path to translates
 		if (empty($this->translatesPath)) {
