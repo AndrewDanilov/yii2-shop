@@ -69,11 +69,8 @@ class ProductController extends BaseController
 			}
 		}
 
-		$model->getBehavior('properties')->optionsFilter = ArrayHelper::map($model->availableProperties, 'id', 'id');
-		$model->getBehavior('options')->optionsFilter = ArrayHelper::map($model->availableOptions, 'id', 'id');
-
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['index']);
+			return $this->redirect(['update', 'id' => $model->id]);
 		}
 
 		return $this->render('update', [

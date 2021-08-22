@@ -162,6 +162,25 @@ class Category extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * Дополняет массив ID's категорий родительскими категориями
+	 * по цепочке до самой верхней родительской категории для
+	 * каждой из указанных в $category_ids дочерней категории
+	 *
+	 * @param int[] $category_ids
+	 * @return int[]
+	 */
+	public static function addParentCategoryIds($category_ids)
+	{
+		$category_ids = array_unique($category_ids);
+		$available_category_ids = [];
+		$allCategories = Category::find()->asArray()->all();
+		foreach ($category_ids as $category_id) {
+			$available_category_ids = array_merge($available_category_ids, NestedCategoryHelper::getCategoryPathIds($allCategories, $category_id));
+		}
+		return array_unique($available_category_ids);
+	}
+
+	/**
 	 * Returns all possible values for all properties of products in the specified category.
 	 * Only properties with the is_filtered flag are returned.
 	 * Result as array:
@@ -183,8 +202,13 @@ class Category extends \yii\db\ActiveRecord
 	 * @param int $category_id
 	 * @return array
 	 */
-	public static function getCategoryProductFilteredPropertyValues($category_id=0, $hide_empty=false, $sort_by_value=false)
+	public static function getCategoryProductFilteredPropertyValues($category_id=0, $sort_by_value=false)
 	{
+		// все свойства из категории и РОДИТЕЛЬСКИХ категорий
+		$available_property_ids = CategoryProperties::getAvailablePropertyIds([$category_id]);
+
+		// категория плюс все ДОЧЕРНИЕ категории для выборки товаров - необходимо,
+		// чтобы узнать мин/макс значения свойств нужные для свойств в фильтре типа диапазонов
 		$category_ids = NestedCategoryHelper::getChildrenIds(Category::find(), $category_id);
 		if ($category_id) {
 			array_push($category_ids, $category_id);
@@ -203,11 +227,9 @@ class Category extends \yii\db\ActiveRecord
 			->innerJoin(Property::tableName(), Property::tableName() . '.id = ' . ProductProperties::tableName() . '.property_id')
 			->andWhere([ProductCategories::tableName() . '.category_id' => $category_ids])
 			->andWhere([Property::tableName() . '.is_filtered' => 1])
+			->andWhere([Property::tableName() . '.id' => $available_property_ids])
 			->groupBy(ProductProperties::tableName() . '.id')
 			->orderBy([Property::tableName() . '.order' => SORT_ASC]);
-		if ($hide_empty) {
-			$category_product_properties_query->andWhere(['not', [ProductProperties::tableName() . '.value' => '']]);
-		}
 		if ($sort_by_value) {
 			$category_product_properties_query->addOrderBy([ProductProperties::tableName() . '.value' => SORT_ASC]);
 		}

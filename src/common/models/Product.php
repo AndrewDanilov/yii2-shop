@@ -27,15 +27,13 @@ use andrewdanilov\behaviors\ValueTypeBehavior;
  * @property string $meta_data // todo: use for custom category fields
  * @property Brand $brand
  * @property Order[] $orders
- * @property Property[] $availableProperties
- * @property Option[] $availableOptions
+ * @property int[] $availablePropertyIds
+ * @property int[] $availableOptionIds
  * @property integer[] $category_ids
  * @property Category[] $categories
  * @property integer[] $sticker_ids
  * @property Sticker[] $stickers
  * @property string $categoriesDelimitedString
- * @property array $availableCategoryProperties
- * @property array $availableCategoryOptions
  * @property ProductImages[] $images
  * @property ProductProperties[] $productProperties
  * @property ProductOptions[] $productOptions
@@ -162,28 +160,34 @@ class Product extends \yii\db\ActiveRecord
 		return $this->hasMany(Order::class, ['id' => 'order_id'])->viaTable(OrderProducts::tableName(), ['product_id' => 'id']);
 	}
 
-	public function getAvailableCategoryProperties()
-	{
-		return $this->hasMany(CategoryProperties::class, ['category_id' => 'id'])->via('tag');
+	public function getAvailablePropertyIds() {
+		return CategoryProperties::getAvailablePropertyIds($this->category_ids);
 	}
 
-	public function getAvailableCategoryOptions()
-	{
-		return $this->hasMany(CategoryOptions::class, ['category_id' => 'id'])->via('tag');
-	}
-
-	public function getAvailableProperties() {
-		return $this->hasMany(Property::class, ['id' => 'property_id'])->via('availableCategoryProperties');
-	}
-
-	public function getAvailableOptions() {
-		return $this->hasMany(Option::class, ['id' => 'option_id'])->via('availableCategoryOptions');
+	public function getAvailableOptionIds() {
+		return CategoryOptions::getAvailableOptionIds($this->category_ids);
 	}
 
 	//////////////////////////////////////////////////////////////////
 
+	public function afterFind()
+	{
+		parent::afterFind();
+		// определяем доступные свойства и опции для данного товара
+		$this->getBehavior('properties')->optionsFilter = $this->availablePropertyIds;
+		$this->getBehavior('options')->optionsFilter = $this->availableOptionIds;
+	}
+
 	public function beforeSave($insert)
 	{
+		if (!empty($this->category_ids)) {
+			// дополним каждую категорию цепочкой из родительских категорий
+			$this->category_ids = Category::addParentCategoryIds($this->category_ids);
+		}
+		// определяем доступные свойства и опции для данного товара
+		$this->getBehavior('properties')->optionsFilter = $this->availablePropertyIds;
+		$this->getBehavior('options')->optionsFilter = $this->availableOptionIds;
+		// чпу по умолчанию
 		if (empty($this->slug)) {
 			$this->slug = Inflector::slug($this->name);
 			if (empty($this->slug)) {
@@ -202,7 +206,7 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
-		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
+		$behavior->optionsFilter = $this->availablePropertyIds;
 		$productProperties = $behavior->getOptionsRef();
 		return $productProperties->all();
 	}
@@ -215,7 +219,7 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
-		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
+		$behavior->optionsFilter = $this->availablePropertyIds;
 		$productProperties = $behavior->getOptionsRef();
 		$productProperties->innerJoin(PropertyGroups::tableName(), PropertyGroups::tableName() . '.property_id = ' . ProductProperties::tableName() . '.property_id');
 		$productProperties->innerJoin(Group::tableName(), Group::tableName() . '.id = ' . PropertyGroups::tableName() . '.group_id');
@@ -233,27 +237,27 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('properties');
-		$behavior->optionsFilter = ArrayHelper::map($this->availableProperties, 'id', 'id');
+		$behavior->optionsFilter = $this->availablePropertyIds;
 		$productProperties = $behavior->getOptionsRef();
 		$productProperties->andWhere(['is_filtered' => 1]);
 		return $productProperties->all();
 	}
 
 	/**
-	 * @param array|string|null $productOptionsIds
+	 * @param array|string|null $productOptionIds
 	 * @return ProductOptions[]
 	 */
-	public function getProductOptions($productOptionsIds=null)
+	public function getProductOptions($productOptionIds=null)
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
-		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
+		$behavior->optionsFilter = $this->availableOptionIds;
 		$productOptions = $behavior->getOptionsRef();
-		if ($productOptionsIds !== null) {
-			if (!is_array($productOptionsIds)) {
-				$productOptionsIds = explode(',', $productOptionsIds);
+		if ($productOptionIds !== null) {
+			if (!is_array($productOptionIds)) {
+				$productOptionIds = explode(',', $productOptionIds);
 			}
-			$productOptions->where(['id' => $productOptionsIds]);
+			$productOptions->where(['id' => $productOptionIds]);
 		}
 		return $productOptions->all();
 	}
@@ -265,7 +269,7 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
-		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
+		$behavior->optionsFilter = $this->availableOptionIds;
 		$productOptions = $behavior->getOptionsRef();
 		$productOptions->where(['is_filtered' => 1]);
 		return $productOptions->all();
@@ -278,19 +282,19 @@ class Product extends \yii\db\ActiveRecord
 	{
 		/* @var $behavior ShopOptionBehavior */
 		$behavior = $this->getBehavior('options');
-		$behavior->optionsFilter = ArrayHelper::map($this->availableOptions, 'id', 'id');
+		$behavior->optionsFilter = $this->availableOptionIds;
 		return $behavior->getOptionsRef()->groupBy('option_id')->all();
 	}
 
 	//////////////////////////////////////////////////////////////////
 
-	public function getPriceWithOptions($productOptionsIds=null)
+	public function getPriceWithOptions($productOptionIds=null)
 	{
 		$price = $this->price;
-		if ($productOptionsIds === null) {
+		if ($productOptionIds === null) {
 			$productOptions = $this->defaultProductOptions;
 		} else {
-			$productOptions = $this->getProductOptions($productOptionsIds);
+			$productOptions = $this->getProductOptions($productOptionIds);
 		}
 		foreach ($productOptions as $productOption) {
 			$price += $productOption->add_price;
