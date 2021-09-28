@@ -38,75 +38,78 @@ In backend main config `modules` section add:
 
 ```php
 $config = [
-	// ...
-	'modules' => [
-		// ...
-		'shop' => [
-			'class' => 'andrewdanilov\shop\backend\Module',
-			// access role for module controllers, optional, default is ['@']
-			'access' => ['admin'],
-			// path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
-			'translatesPath' => '@common/messages/shop',
-			// file manager configuration, optional, default is:
-			'fileManager' => [
-				'basePath' => '@frontend/web',
-				'paths' => [
-					[
-						'name' => 'Product images',
-						'path' => 'upload/images/product',
-					],
-					[
-						'name' => 'Category images',
-						'path' => 'upload/images/category',
-					],
-					[
-						'name' => 'Brand images',
-						'path' => 'upload/images/brand',
-					],
-					[
-						'name' => 'Sticker images',
-						'path' => 'upload/images/sticker',
-					],
-					[
-						'name' => 'Documents',
-						'path' => 'upload/images/docs',
-					],
-				],
-			],
-		],
-	],
+    // ...
+    'modules' => [
+        // ...
+        'shop' => [
+            'class' => 'andrewdanilov\shop\backend\Module',
+            // access role for module controllers, optional, default is ['@']
+            'access' => ['admin'],
+            // path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
+            'translatesPath' => '@common/messages/shop',
+            // file manager configuration, optional, default is:
+            'fileManager' => [
+                'basePath' => '@frontend/web',
+                'paths' => [
+                    [
+                        'name' => 'Product images',
+                        'path' => 'upload/images/product',
+                    ],
+                    [
+                        'name' => 'Category images',
+                        'path' => 'upload/images/category',
+                    ],
+                    [
+                        'name' => 'Brand images',
+                        'path' => 'upload/images/brand',
+                    ],
+                    [
+                        'name' => 'Sticker images',
+                        'path' => 'upload/images/sticker',
+                    ],
+                    [
+                        'name' => 'Documents',
+                        'path' => 'upload/images/docs',
+                    ],
+                ],
+            ],
+        ],
+    ],
 ];
 ```
 
 Here `access` option allows restricting access to defined roles.
 
-In frontend main config `modules` section add:
+In frontend main config `modules` section and `bootstrap` section add `shop` module:
 
 ```php
 $config = [
-	// ...
-	'modules' => [
-		// ...
-		'shop' => [
-			'class' => 'andrewdanilov\shop\frontend\Module',
-			// path to template views, optional, default is '@andrewdanilov/shop/frontend/views'
-			'templatesPath' => '@frontend/views/shop',
-			// path to mail template views, optional, default is '@andrewdanilov/shop/common/mail'
-			'mailTemplatesPath' => '@common/mail/shop',
-			// path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
-			'translatesPath' => '@common/messages/shop',
-			// main currency, using by shop, optional, default is 'USD'
-			'currency' => '$',
-		],
-	],
-	// If you use own templates paths, you need to add `shop` module to `bootstrap` section
-	// to enable i18n and other settings before using module parts.
-	// This is optional, but recommended in any way.
-	'bootstrap' => ['shop'],
+    // ...
+    'modules' => [
+        // ...
+        'shop' => [
+            'class' => 'andrewdanilov\shop\frontend\Module',
+            // path to template views, optional, default is '@andrewdanilov/shop/frontend/views'
+            'templatesPath' => '@frontend/views/shop',
+            // path to mail template views, optional, default is '@andrewdanilov/shop/common/mail'
+            'mailTemplatesPath' => '@common/mail/shop',
+            // path to user translates, optional, default is '@andrewdanilov/shop/common/messages'
+            'translatesPath' => '@common/messages/shop',
+            // main currency, using by shop, optional, default is 'USD'
+            'currency' => '$',
+        ],
+    ],
+    // If you use own templates paths, you need to add `shop` module to `bootstrap` section
+    // to enable i18n and other settings before using module parts.
+    // This is optional, but recommended in any way.
+    'bootstrap' => [
+        // ...
+        'shop',
+    ],
 ];
 ```
 
-In `common/params.php` config add `adminEmail` param like this.
+In `common/config/params.php` config file add/modify `adminEmail`, `senderEmail` and `senderName` param like this
 
 ```php
 return [
@@ -128,16 +131,16 @@ return [
     'components' => [
         // ...
         'mailer' => [
-	        'class' => 'yii\swiftmailer\Mailer',
-	        'useFileTransport' => false,
-	        'transport' => [
-		        'class' => 'Swift_SmtpTransport',
-		        'username' => 'sender@example.com',
-		        'password' => 'example_password',
-		        'host' => 'smtp.example.com',
-		        'port' => '465',
-		        'encryption' => 'ssl',
-	        ],
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'username' => 'sender@example.com',
+                'password' => 'example_password',
+                'host' => 'smtp.example.com',
+                'port' => '465',
+                'encryption' => 'ssl',
+            ],
         ],
     ],
 ];
@@ -147,16 +150,16 @@ Backend menu items:
 
 ```php
 $shop_menu_items = [
-	['label' => 'Заказы', 'url' => ['/shop/order']],
-	['label' => 'Товары', 'url' => ['/shop/product']],
-	['label' => 'Бренды', 'url' => ['/shop/brand']],
-	['label' => 'Свойства', 'url' => ['/shop/property']],
-	['label' => 'Опции', 'url' => ['/shop/option']],
-	['label' => 'Группы свойств', 'url' => ['/shop/group']],
-	['label' => 'Связи', 'url' => ['/shop/relation']],
-	['label' => 'Способы оплаты', 'url' => ['/shop/pay']],
-	['label' => 'Способы доставки', 'url' => ['/shop/delivery']],
-	['label' => 'Стикеры', 'url' => ['/shop/sticker']],
+    ['label' => 'Заказы', 'url' => ['/shop/order']],
+    ['label' => 'Товары', 'url' => ['/shop/product']],
+    ['label' => 'Бренды', 'url' => ['/shop/brand']],
+    ['label' => 'Свойства', 'url' => ['/shop/property']],
+    ['label' => 'Опции', 'url' => ['/shop/option']],
+    ['label' => 'Группы свойств', 'url' => ['/shop/group']],
+    ['label' => 'Связи', 'url' => ['/shop/relation']],
+    ['label' => 'Способы оплаты', 'url' => ['/shop/pay']],
+    ['label' => 'Способы доставки', 'url' => ['/shop/delivery']],
+    ['label' => 'Стикеры', 'url' => ['/shop/sticker']],
 ];
 
 echo \yii\widgets\Menu::widget(['items' => $shop_menu_items]);
@@ -207,9 +210,9 @@ Extension supports internationalisation. You can set your language in `common/co
 
 ```php
 return [
-	// ...
-	'language' => 'ru-RU',
-	// ...
+    // ...
+    'language' => 'ru-RU',
+    // ...
 ];
 ```
 
