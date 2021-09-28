@@ -109,7 +109,7 @@ $config = [
 ];
 ```
 
-In `common/config/params.php` config file add/modify `adminEmail`, `senderEmail` and `senderName` param like this
+In `common/config/params.php` config file add/modify `adminEmail`, `senderEmail` and `senderName` params like this
 
 ```php
 return [
