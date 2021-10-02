@@ -150,16 +150,16 @@ Backend menu items:
 
 ```php
 $shop_menu_items = [
-    ['label' => 'Заказы', 'url' => ['/shop/order']],
-    ['label' => 'Товары', 'url' => ['/shop/product']],
-    ['label' => 'Бренды', 'url' => ['/shop/brand']],
-    ['label' => 'Свойства', 'url' => ['/shop/property']],
-    ['label' => 'Опции', 'url' => ['/shop/option']],
-    ['label' => 'Группы свойств', 'url' => ['/shop/group']],
-    ['label' => 'Связи', 'url' => ['/shop/relation']],
-    ['label' => 'Способы оплаты', 'url' => ['/shop/pay']],
-    ['label' => 'Способы доставки', 'url' => ['/shop/delivery']],
-    ['label' => 'Стикеры', 'url' => ['/shop/sticker']],
+    ['label' => 'Orders', 'url' => ['/shop/order'], 'icon' => 'shopping-cart'],
+    ['label' => 'Products', 'url' => ['/shop/product'], 'icon' => 'shopping-bag'],
+    ['label' => 'Brands', 'url' => ['/shop/brand'], 'icon' => 'leaf'],
+    ['label' => 'Options', 'url' => ['/shop/option'], 'icon' => 'check-square'],
+    ['label' => 'Properties', 'url' => ['/shop/property'], 'icon' => 'list'],
+    ['label' => 'Property groups', 'url' => ['/shop/group'], 'icon' => 'tags'],
+    ['label' => 'Linking', 'url' => ['/shop/relation'], 'icon' => 'share-alt'],
+    ['label' => 'Pay methods', 'url' => ['/shop/pay'], 'icon' => 'credit-card'],
+    ['label' => 'Shipping methods', 'url' => ['/shop/delivery'], 'icon' => 'truck'],
+    ['label' => 'Stickers', 'url' => ['/shop/sticker'], 'icon' => 'bookmark'],
 ];
 
 echo \yii\widgets\Menu::widget(['items' => $shop_menu_items]);
