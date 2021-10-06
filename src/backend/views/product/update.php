@@ -5,6 +5,7 @@ use andrewdanilov\behaviors\LinkedProductsBehavior;
 use andrewdanilov\behaviors\ShopOptionBehavior;
 use andrewdanilov\behaviors\ValueTypeBehavior;
 use andrewdanilov\ckeditor\CKEditor;
+use andrewdanilov\shop\backend\Module;
 use andrewdanilov\shop\common\models\Sticker;
 use andrewdanilov\helpers\CKEditorHelper;
 use andrewdanilov\helpers\NestedCategoryHelper;
@@ -44,7 +45,9 @@ if ($model->isNewRecord) {
 
 		<?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-		<?= $form->field($model, 'article')->textInput(['maxlength' => true]) ?>
+		<?php if (Module::getInstance()->enableArticleNumbers) { ?>
+			<?= $form->field($model, 'article')->textInput(['maxlength' => true]) ?>
+		<?php } ?>
 
 		<?= $form->field($model, 'is_stock')->checkbox() ?>
 
@@ -54,15 +57,21 @@ if ($model->isNewRecord) {
 			'editorOptions' => CKEditorHelper::defaultOptions(),
 		]); ?>
 
-		<?= $form->field($model, 'brand_id')->dropDownList(Brand::getBrandsList(), ['prompt' => '']) ?>
+		<?php if (Module::getInstance()->enableBrands) { ?>
+			<?= $form->field($model, 'brand_id')->dropDownList(Brand::getBrandsList(), ['prompt' => '']) ?>
+		<?php } ?>
 
 		<?= $form->field($model, 'category_ids')->checkboxList(NestedCategoryHelper::getDropdownTree(Category::find()), ['class' => 'form-scroll-group']) ?>
 
 		<?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
 
-		<?= $form->field($model, 'discount')->textInput(['type' => 'number']) ?>
+		<?php if (Module::getInstance()->enableDiscounts) { ?>
+			<?= $form->field($model, 'discount')->textInput(['type' => 'number']) ?>
+		<?php } ?>
 
-		<?= $form->field($model, 'sticker_ids')->checkboxList(Sticker::getStickersList()) ?>
+		<?php if (Module::getInstance()->enableStickers) { ?>
+			<?= $form->field($model, 'sticker_ids')->checkboxList(Sticker::getStickersList()) ?>
+		<?php } ?>
 
 		<?php /* @var ShopOptionBehavior $options */ ?>
 		<?php $options = $model->getBehavior('properties') ?>
@@ -126,6 +135,7 @@ if ($model->isNewRecord) {
 
 		<div class="form-group">
 			<?= Html::submitButton(Yii::t('shop/backend', 'Save'), ['class' => 'btn btn-success']) ?>
+			<?= Html::submitButton(Yii::t('shop/backend', 'Save and add more'), ['class' => 'btn btn-primary', 'name' => 'add_more', 'value' => 1]) ?>
 		</div>
 
 		<?php ActiveForm::end(); ?>

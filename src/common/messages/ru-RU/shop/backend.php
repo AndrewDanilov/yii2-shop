@@ -23,6 +23,7 @@ return [
     'Edit property' => 'Изменить свойство',
     'Enter product name...' => 'Введите название товара...',
     'New category' => 'Новая категория',
+    'New product category' => 'Новая категория товара',
     'New option' => 'Новая опция',
     'New product' => 'Новый товар',
     'New property' => 'Новое свойство',
@@ -33,4 +34,6 @@ return [
     'Remove' => 'Удалить',
     'Remove option' => 'Удалить опцию',
     'Save' => 'Сохранить',
+    'Save and add more' => 'Сохранить и добавить еще',
+	'There is no categories yet. Please, add some categories by clicking button <b>New category</b>' => 'Пока нет ни одной категории. Пожалуйста, добавьте категории с помощью кнопки <b>Новая категория</b>',
 ];

@@ -4,6 +4,10 @@ namespace andrewdanilov\shop\backend;
 class Module extends \andrewdanilov\shop\Module
 {
 	public $access = ['@'];
+	public $enableArticleNumbers = true;
+	public $enableBrands = true;
+	public $enableDiscounts = true;
+	public $enableStickers = true;
 	public $fileManager;
 
 	public function init()

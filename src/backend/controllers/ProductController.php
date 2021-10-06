@@ -55,12 +55,14 @@ class ProductController extends BaseController
 	{
 		/* @var $model Product|ImagesBehavior|TagBehavior|ShopOptionBehavior|LinkedProductsBehavior */
 
+		$productSearch = Yii::$app->request->get('ProductSearch');
+
 		if ($id) {
 			$model = Product::findOne($id);
 		} else {
 			$model = new Product();
+			$model->is_stock = true;
 
-			$productSearch = Yii::$app->request->get('ProductSearch');
 			if (!empty($productSearch['category_id'])) {
 				$model->setTagIds([$productSearch['category_id']]);
 			}
@@ -70,7 +72,20 @@ class ProductController extends BaseController
 		}
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['update', 'id' => $model->id]);
+			$url = ['update'];
+
+			if (!Yii::$app->request->post('add_more')) {
+				$url['id'] = $model->id;
+			}
+
+			if (!empty($productSearch['category_id'])) {
+				$url['ProductSearch']['category_id'] = $productSearch['category_id'];
+			}
+			if (!empty($productSearch['brand_id'])) {
+				$url['ProductSearch']['brand_id'] = $productSearch['brand_id'];
+			}
+
+			return $this->redirect($url);
 		}
 
 		return $this->render('update', [

@@ -8,6 +8,7 @@
 use andrewdanilov\helpers\NestedCategoryHelper;
 use andrewdanilov\shop\backend\assets\ShopAsset;
 use andrewdanilov\shop\backend\models\OptionSearch;
+use andrewdanilov\shop\backend\widgets\CategoryTree\CategoryTreeFilterList;
 use andrewdanilov\shop\common\models\Category;
 use andrewdanilov\shop\common\models\Option;
 use yii\data\ActiveDataProvider;
@@ -20,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ShopAsset::register($this);
 
+$create_category_url = ['category/update'];
 $create_option_url = ['option/create'];
 if (!empty($optionSearch = array_filter(Yii::$app->request->get('OptionSearch', [])))) {
 	$create_option_url['ProductSearch'] = $optionSearch;
@@ -29,22 +31,16 @@ if (!empty($optionSearch = array_filter(Yii::$app->request->get('OptionSearch', 
 
     <div class="shop-editor-actions">
         <?= Html::a(Yii::t('shop/backend', 'New option'), $create_option_url, ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('shop/backend', 'New product category'), $create_category_url, ['class' => 'btn btn-primary']) ?>
     </div>
 
 	<div class="shop-editor-boxes">
 		<div class="shop-editor-box">
-			<div class="shop-tree-list">
-				<?php foreach ($tree as $item) { ?>
-					<div class="shop-list-item level-<?= $item['level'] ?> <?php if (ArrayHelper::getValue($optionSearch, 'category_id') == $item['category']['id']) { ?>active-item<?php } ?>">
-						<div class="shop-tree-actions">
-							<?= Html::a('<span class="fa fa-folder"></span>', ['option/index', 'OptionSearch' => ['category_id' => $item['category']['id']]], ['title' => Yii::t('shop/backend', 'Open')]); ?>
-							<?= Html::a('<span class="fa fa-pen"></span>', ['category/update', 'id' => $item['category']['id']], ['title' => Yii::t('shop/backend', 'Edit')]) ?>
-							<?= Html::a('<span class="fa fa-trash"></span>', ['category/delete', 'id' => $item['category']['id']], ['data' => ['confirm' => Yii::t('shop/backend', 'Are you sure you want to delete this category?'), 'method' => 'post'], 'title' => Yii::t('shop/backend', 'Remove')]) ?>
-						</div>
-						<div class="shop-tree-link"><?= Html::a($item['category']['name'] . ' (' . $item['category']['count'] . ')', ['option/index', 'OptionSearch' => ['category_id' => $item['category']['id']]], ['title' => Yii::t('shop/backend', 'Open')]) ?></div>
-					</div>
-				<?php } ?>
-			</div>
+			<?= CategoryTreeFilterList::widget([
+				'tree' => $tree,
+				'filteredItemsListUriAction' => 'option/index',
+				'filteredItemsListUriParamName' => 'OptionSearch',
+			]) ?>
 		</div>
 	</div>
 
